@@ -12,11 +12,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{202FA639-7417-4409-953D-434B19767E72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "src\Services\Services.csproj", "{C24EDBD8-B214-40EC-9893-A0AA5A36A50D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
+		Debug|Any CPU = DebFAug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
@@ -27,12 +25,5 @@ Global
 		{24F12CEE-AF03-4632-87F7-B49CA010E878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24F12CEE-AF03-4632-87F7-B49CA010E878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24F12CEE-AF03-4632-87F7-B49CA010E878}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C24EDBD8-B214-40EC-9893-A0AA5A36A50D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C24EDBD8-B214-40EC-9893-A0AA5A36A50D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C24EDBD8-B214-40EC-9893-A0AA5A36A50D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C24EDBD8-B214-40EC-9893-A0AA5A36A50D}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{C24EDBD8-B214-40EC-9893-A0AA5A36A50D} = {202FA639-7417-4409-953D-434B19767E72}
 	EndGlobalSection
 EndGlobal

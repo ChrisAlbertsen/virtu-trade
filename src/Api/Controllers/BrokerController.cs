@@ -16,7 +16,7 @@ public class BrokerController : ControllerBase
     [HttpGet("price")]
     public async Task<IActionResult> GetPrice(string symbol)
     {
-        var price = await _brokerService.GetCurrentPriceAsync(symbol);
+        decimal price = await _brokerService.GetCurrentPriceAsync(symbol);
         return Ok(price);
     }
 
