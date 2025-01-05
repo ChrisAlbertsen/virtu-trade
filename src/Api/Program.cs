@@ -1,5 +1,6 @@
 using Api.Services;
 using System.Globalization;
+using Infrastructure.Binance;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
@@ -13,11 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IBrokerService, BinanceBrokerService>();
-
-builder.Services.AddHttpClient<IBrokerService, BinanceBrokerService>(client =>
-{
-    client.BaseAddress = new Uri("https://api.binance.com");
-});
+builder.Services.AddScoped<IBinanceApi, BinanceApi>(); 
+builder.Services.AddScoped<HttpClient>();
 
 var app = builder.Build();
 

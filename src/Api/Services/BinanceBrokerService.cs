@@ -1,23 +1,21 @@
 using System.Text.Json;
 using System.Net.Http;
 using Api.Services.Models;
+using Infrastructure.Binance;
 
 namespace Api.Services;
 public class BinanceBrokerService : IBrokerService {
-    private readonly HttpClient _httpClient;
+    private readonly IBinanceApi _binanceApi;
 
-    public BinanceBrokerService (HttpClient httpClient) {
-        _httpClient = httpClient;
+    public BinanceBrokerService (IBinanceApi binanceApi)
+    {
+        _binanceApi = binanceApi;
     }
 
-    public async Task<decimal> GetCurrentPriceAsync(string symbol) {
-        HttpResponseMessage response = await _httpClient.GetAsync($"https://api.binance.com/api/v3/ticker/price?symbol={symbol}");
-        response.EnsureSuccessStatusCode();
-        
-        string json = await response.Content.ReadAsStringAsync();
-
-        BinancePriceResponse? data = JsonSerializer.Deserialize<BinancePriceResponse>(json);
-        return data.Price;
+    public async Task<BinancePriceResponse> GetCurrentPriceAsync(string symbol)
+    {
+        var priceResponse = await _binanceApi.GetCurrentPriceAsync(symbol);
+        return priceResponse;
     }
 
     public async Task PlaceOrderAsync(string symbol, decimal quantity, string orderType) {

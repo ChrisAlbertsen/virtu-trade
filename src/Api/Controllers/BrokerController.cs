@@ -1,3 +1,4 @@
+using Api.Services.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -16,7 +17,7 @@ public class BrokerController : ControllerBase
     [HttpGet("price")]
     public async Task<IActionResult> GetPrice(string symbol)
     {
-        decimal price = await _brokerService.GetCurrentPriceAsync(symbol);
+        var price = await _brokerService.GetCurrentPriceAsync(symbol);
         return Ok(price);
     }
 
