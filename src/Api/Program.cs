@@ -1,4 +1,4 @@
-using Api.Services;
+using Models.Services;
 using System.Globalization;
 using Infrastructure.Binance;
 
@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IBrokerService, BinanceBrokerService>();
 builder.Services.AddScoped<IBinanceApi, BinanceApi>(); 
 builder.Services.AddScoped<HttpClient>();
+
+builder.Services.Configure<BinanceApiSettings>(builder.Configuration.GetSection("BinanceApi"));
 
 var app = builder.Build();
 

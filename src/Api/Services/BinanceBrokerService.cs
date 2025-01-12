@@ -1,9 +1,9 @@
 using System.Text.Json;
 using System.Net.Http;
-using Api.Services.Models;
 using Infrastructure.Binance;
+using Data.Models;
 
-namespace Api.Services;
+namespace Models.Services;
 public class BinanceBrokerService : IBrokerService {
     private readonly IBinanceApi _binanceApi;
 
@@ -12,7 +12,7 @@ public class BinanceBrokerService : IBrokerService {
         _binanceApi = binanceApi;
     }
 
-    public async Task<BinancePriceResponse> GetCurrentPriceAsync(string symbol)
+    public async Task<PriceResponse> GetCurrentPriceAsync(string symbol)
     {
         var priceResponse = await _binanceApi.GetCurrentPriceAsync(symbol);
         return priceResponse;

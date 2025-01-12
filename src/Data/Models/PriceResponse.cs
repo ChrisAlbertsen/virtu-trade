@@ -1,6 +1,6 @@
 
-namespace Api.Services.Models;
-public class BinancePriceResponse
+namespace Data.Models;
+public class PriceResponse
 {
     public required string Symbol {get; set; }
     public required decimal Price { get; set; }

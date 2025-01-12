@@ -1,18 +1,25 @@
-﻿using Api.Services.Models;
+﻿using Data.Models;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Binance;
 
 public class BinanceApi: BaseHttpClient, IBinanceApi
 {
-    private const string BasePriceUrl = "https://api.binance.com/api/v3/ticker/price";
+    private readonly string _basePriceUrl;
 
-    public BinanceApi(HttpClient httpClient) : base(httpClient)
+    public BinanceApi(HttpClient httpClient, IOptions<BinanceApiSettings> binanceApiSettings) : base(httpClient)
     {
+        _basePriceUrl = binanceApiSettings.Value.BasePriceUrl;
     }
 
-    public Task<BinancePriceResponse> GetCurrentPriceAsync(string symbol)
+    public Task<PriceResponse> GetCurrentPriceAsync(string symbol)
     {
         var parameters = new Dictionary<string, string> { { "symbol", symbol } };
-        return GetAsync<BinancePriceResponse>(BasePriceUrl, null ,parameters);
+        return GetAsync<PriceResponse>(_basePriceUrl, null ,parameters);
+    }
+
+    public Task<HistoricalPriceResponse> GetHistoricalPriceAsync(Dictionary<string,string> queryParams)
+    {
+        return GetAsync<HistoricalPriceResponse>(_basePriceUrl, null ,queryParams);
     }
 }

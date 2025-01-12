@@ -1,4 +1,4 @@
-using Api.Services.Models;
+using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;

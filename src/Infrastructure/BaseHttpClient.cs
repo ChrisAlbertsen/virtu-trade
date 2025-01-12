@@ -11,9 +11,18 @@ public abstract class BaseHttpClient
     {
         _httpClient = httpClient;
     }
-    protected Task<T> GetAsync<T>(string url)
+    protected async Task<T> GetAsync<T>(string url)
     {
-        throw new NotImplementedException();
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        var httpResponseMessage = _httpClient.SendAsync(request)
+            .Result
+            .EnsureSuccessStatusCode().Content.ReadAsStringAsync();
+
+        if (httpResponseMessage == null)
+        {
+            throw new HttpRequestException($"Unable to get response from url: {url}");
+        }
+        return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(httpResponseMessage));
     } 
     protected async Task<T> GetAsync<T>(string url, Dictionary<string, string> headers)
     {
@@ -35,7 +44,6 @@ public abstract class BaseHttpClient
         url = AddQueryParameters(url, queryParameters);
 
         var request = new HttpRequestMessage(HttpMethod.Get, url);
-        //AddHeaders(headers, request);
     
         var httpResponseMessage = await _httpClient.SendAsync(request)
             .Result

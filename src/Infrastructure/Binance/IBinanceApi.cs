@@ -1,9 +1,10 @@
-﻿using Api.Services.Models;
+﻿using Data.Models;
 
 namespace Infrastructure.Binance;
 
 public interface IBinanceApi
 {
-    Task<BinancePriceResponse> GetCurrentPriceAsync(string symbol);
+    Task<PriceResponse> GetCurrentPriceAsync(string symbol);
     
+    Task<HistoricalPriceResponse> GetHistoricalPriceAsync(Dictionary<string, string> queryParams);
 }

@@ -1,7 +1,7 @@
 
-using Api.Services.Models;
+using Data.Models;
 
 public interface IBrokerService {
-    Task<BinancePriceResponse> GetCurrentPriceAsync(string symbol);
+    Task<PriceResponse> GetCurrentPriceAsync(string symbol);
     Task PlaceOrderAsync(string symbol, decimal quantity, string orderType);
 }
