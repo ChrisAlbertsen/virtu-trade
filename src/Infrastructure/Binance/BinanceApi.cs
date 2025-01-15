@@ -5,21 +5,23 @@ namespace Infrastructure.Binance;
 
 public class BinanceApi: BaseHttpClient, IBinanceApi
 {
-    private readonly string _basePriceUrl;
+    private readonly string _currentPriceUrl;
+    private readonly string _historicalPriceUrl;
 
     public BinanceApi(HttpClient httpClient, IOptions<BinanceApiSettings> binanceApiSettings) : base(httpClient)
     {
-        _basePriceUrl = binanceApiSettings.Value.BasePriceUrl;
+        _currentPriceUrl = binanceApiSettings.Value.CurrentPriceUrl;
+        _historicalPriceUrl = binanceApiSettings.Value.HistoricalPriceUrl;
     }
 
     public Task<PriceResponse> GetCurrentPriceAsync(string symbol)
     {
         var parameters = new Dictionary<string, string> { { "symbol", symbol } };
-        return GetAsync<PriceResponse>(_basePriceUrl, null ,parameters);
+        return GetAsync<PriceResponse>(_currentPriceUrl, null ,parameters);
     }
 
-    public Task<HistoricalPriceResponse> GetHistoricalPriceAsync(Dictionary<string,string> queryParams)
+    public Task<HistoricalPriceResponse> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams)
     {
-        return GetAsync<HistoricalPriceResponse>(_basePriceUrl, null ,queryParams);
+        return GetAsync<HistoricalPriceResponse>(_historicalPriceUrl, null ,historicalPriceParams.ToDictionary());
     }
 }

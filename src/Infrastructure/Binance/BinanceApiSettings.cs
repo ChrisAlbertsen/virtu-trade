@@ -2,5 +2,6 @@
 
 public class BinanceApiSettings
 {
-    public string Current { get; set; }
+    public string CurrentPriceUrl { get; set; }
+    public string HistoricalPriceUrl { get; set; }
 }

@@ -83,6 +83,5 @@ public abstract class BaseHttpClient
             request.Headers.Add(header.Key, header.Value);
         }
     }
-    
 }
 
