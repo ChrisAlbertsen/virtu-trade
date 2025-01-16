@@ -14,11 +14,18 @@ public class BrokerController : ControllerBase
         _brokerService = brokerService;
     }
 
-    [HttpGet("price")]
-    public async Task<IActionResult> GetPrice(string symbol)
+    [HttpGet("prices/current")]
+    public async Task<IActionResult> GetCurrentPrice(string symbol)
     {
         var price = await _brokerService.GetCurrentPriceAsync(symbol);
         return Ok(price);
+    }
+
+    [HttpGet("prices/historical")]
+    public async Task<IActionResult> GetHistoricalPrice([FromQuery] HistoricalPriceParams historicalPriceParams)
+    {
+        var historicalPrices = await _brokerService.GetHistoricalPriceAsync(historicalPriceParams);
+        return Ok(historicalPrices);
     }
 
     [HttpPost("order")]

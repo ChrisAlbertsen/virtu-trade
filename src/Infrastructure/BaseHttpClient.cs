@@ -19,7 +19,7 @@ public abstract class BaseHttpClient
             .EnsureSuccessStatusCode().Content.ReadAsStringAsync();
 
         if (httpResponseMessage == null)
-        {
+        {   
             throw new HttpRequestException($"Unable to get response from url: {url}");
         }
         return JsonConvert.DeserializeObject<T>(JsonConvert.SerializeObject(httpResponseMessage));

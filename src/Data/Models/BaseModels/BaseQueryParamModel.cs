@@ -12,9 +12,10 @@ public abstract class BaseQueryParamModel
             var value = property.GetValue(this);
             if (value is not null)
             {
-                queryParameters.Add(property.Name, value!.ToString());
+                var propertyName = char.ToLower(property.Name[0]) + property.Name.Substring(1);
+                queryParameters.Add(propertyName, value!.ToString());
             }
-
+            
         }
 
         return queryParameters;

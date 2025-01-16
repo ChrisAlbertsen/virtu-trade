@@ -14,14 +14,14 @@ public class BinanceApi: BaseHttpClient, IBinanceApi
         _historicalPriceUrl = binanceApiSettings.Value.HistoricalPriceUrl;
     }
 
-    public Task<PriceResponse> GetCurrentPriceAsync(string symbol)
+    public Task<CurrentPriceResponse> GetCurrentPriceAsync(string symbol)
     {
         var parameters = new Dictionary<string, string> { { "symbol", symbol } };
-        return GetAsync<PriceResponse>(_currentPriceUrl, null ,parameters);
+        return GetAsync<CurrentPriceResponse>(_currentPriceUrl, null ,parameters);
     }
 
-    public Task<HistoricalPriceResponse> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams)
+    public Task<HistoricalPriceResponse[]> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams)
     {
-        return GetAsync<HistoricalPriceResponse>(_historicalPriceUrl, null ,historicalPriceParams.ToDictionary());
+        return GetAsync<HistoricalPriceResponse[]>(_historicalPriceUrl, null ,historicalPriceParams.ToDictionary());
     }
 }
