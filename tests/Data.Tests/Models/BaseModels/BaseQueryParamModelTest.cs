@@ -9,7 +9,7 @@ public class BaseQueryParamModelTest
 {
 
     [Fact]
-    public void METHOD()
+    public void ToDictionary_WithBaseQueryParam_ShouldReturnDictionary()
     {
         var historicalPriceParams = new HistoricalPriceParams(){Symbol = "USD", Interval = "s"};
         var result = historicalPriceParams.ToDictionary();
