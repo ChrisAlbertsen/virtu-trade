@@ -1,4 +1,5 @@
 ﻿using Data.Models;
+using Data.Models.RawDataModels;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Binance;
