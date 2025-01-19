@@ -17,9 +17,9 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
             builder.ConfigureServices(services =>
             {
                 services.AddHttpClient<IBinanceApi, BinanceApi>()
-                    .ConfigurePrimaryHttpMessageHandler(() =>
+                    .ConfigurePrimaryHttpMessageHandler((sp) =>
                     {
-                        var config = services.BuildServiceProvider().GetRequiredService<IOptions<BinanceApiSettings>>();
+                        var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
                         return new BinanceStubHttpMessageHandler(config);
                     });
             });
@@ -38,8 +38,8 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
     [Fact]
     public async Task GetHistoricalPrice_ShouldReturnHistoricalPrices()
     {
-        var response = await _client.GetFromJsonAsync<HistoricalPriceResponse[]>("api/broker/prices/historical?symbol=BTCUSDT");
+        var response = await _client.GetFromJsonAsync<HistoricalPriceResponse>("api/broker/prices/historical?symbol=BTCUSDT&interval=1h");
         Assert.NotNull(response);
-        Assert.Equal(2, response.Length);
+        Assert.Equal(3, response.HistoricalPrices.Count);
     }
 }

@@ -12,15 +12,16 @@ public class BinanceApi: BaseHttpClient, IBinanceApi
         _binanceApiSettings = binanceApiSettings.Value;
     }
 
-    public Task<CurrentPriceResponse> GetCurrentPriceAsync(string symbol)
+    public async Task<CurrentPriceResponse> GetCurrentPriceAsync(string symbol)
     {
         var parameters = new Dictionary<string, string> { { "symbol", symbol } };
-        return GetAsync<CurrentPriceResponse>(_binanceApiSettings.CurrentPriceUrl, null ,parameters);
+        return await GetAsync<CurrentPriceResponse>(_binanceApiSettings.CurrentPriceUrl, null ,parameters);
     }
 
-    public Task<HistoricalPriceResponse[]> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams)
+    public async Task<HistoricalPriceResponse> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams)
     {
-        return GetAsync<HistoricalPriceResponse[]>(_binanceApiSettings.HistoricalPriceUrl, null ,historicalPriceParams.ToDictionary());
+        var rawResult = await GetAsync<List<object[]>>(_binanceApiSettings.HistoricalPriceUrl, null ,historicalPriceParams.ToDictionary());
+        return HistoricalPriceMapper.ConvertRawResponse(rawResult);
     }
 }
 

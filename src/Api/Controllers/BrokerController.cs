@@ -24,8 +24,8 @@ public class BrokerController : ControllerBase
     [HttpGet("prices/historical")]
     public async Task<IActionResult> GetHistoricalPrice([FromQuery] HistoricalPriceParams historicalPriceParams)
     {
-        var historicalPrices = await _brokerService.GetHistoricalPriceAsync(historicalPriceParams);
-        return Ok(historicalPrices);
+        var historicalPriceResponse = await _brokerService.GetHistoricalPriceAsync(historicalPriceParams);
+        return Ok(historicalPriceResponse);
     }
 
     [HttpPost("order")]

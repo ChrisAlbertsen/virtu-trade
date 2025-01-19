@@ -18,7 +18,7 @@ public class BinanceBrokerService : IBrokerService {
         return priceResponse;
     }
 
-    public async Task<HistoricalPriceResponse[]> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams)
+    public async Task<HistoricalPriceResponse> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams)
     {
         var historicalPriceResponse = await _binanceApi.GetHistoricalPriceAsync(historicalPriceParams);
         return historicalPriceResponse;
