@@ -23,9 +23,5 @@ public class BinanceBrokerService : IBrokerService {
         var historicalPriceResponse = await _binanceApi.GetHistoricalPriceAsync(historicalPriceParams);
         return historicalPriceResponse;
     }
-
-    public async Task PlaceOrderAsync(string symbol, decimal quantity, string orderType) {
-        throw new NotImplementedException();
-    }
 }
 
