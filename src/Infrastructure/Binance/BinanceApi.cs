@@ -1,9 +1,12 @@
-﻿using Data.Models;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Data.Models;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Binance;
 
-public class BinanceApi: BaseHttpClient, IBinanceApi
+public class BinanceApi : BaseHttpClient, IBinanceApi
 {
     private readonly BinanceApiSettings _binanceApiSettings;
 
@@ -15,19 +18,13 @@ public class BinanceApi: BaseHttpClient, IBinanceApi
     public async Task<CurrentPriceResponse> GetCurrentPriceAsync(string symbol)
     {
         var parameters = new Dictionary<string, string> { { "symbol", symbol } };
-        return await GetAsync<CurrentPriceResponse>(_binanceApiSettings.CurrentPriceUrl, null ,parameters);
+        return await GetAsync<CurrentPriceResponse>(_binanceApiSettings.CurrentPriceUrl, null, parameters);
     }
 
     public async Task<HistoricalPriceResponse> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams)
     {
-        var rawResult = await GetAsync<List<object[]>>(_binanceApiSettings.HistoricalPriceUrl, null ,historicalPriceParams.ToDictionary());
+        var rawResult = await GetAsync<List<object[]>>(_binanceApiSettings.HistoricalPriceUrl, null,
+            historicalPriceParams.ToDictionary());
         return HistoricalPriceMapper.ConvertRawResponse(rawResult);
     }
 }
-
-
-
-
-
-
-

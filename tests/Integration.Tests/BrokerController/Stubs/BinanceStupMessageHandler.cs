@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Data.Models;
 using Infrastructure.Binance;
 using Microsoft.Extensions.Options;
 
@@ -8,8 +7,8 @@ namespace Integration.Tests.BrokerController.Stubs;
 
 public class BinanceStubHttpMessageHandler : HttpMessageHandler
 {
-    private readonly MockData _mockData;
     private readonly BinanceApiSettings _binanceApiSettings;
+    private readonly MockData _mockData;
 
     public BinanceStubHttpMessageHandler(IOptions<BinanceApiSettings> binanceApiSettings)
     {
@@ -17,7 +16,7 @@ public class BinanceStubHttpMessageHandler : HttpMessageHandler
         _mockData = JsonSerializer.Deserialize<MockData>(jsonData);
         _binanceApiSettings = binanceApiSettings.Value;
     }
-    
+
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
         CancellationToken cancellationToken)
     {

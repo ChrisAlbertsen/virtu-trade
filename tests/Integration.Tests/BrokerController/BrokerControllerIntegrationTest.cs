@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Data.Models;
 using Infrastructure.Binance;
 using Integration.Tests.BrokerController.Stubs;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
@@ -17,7 +17,7 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
             builder.ConfigureServices(services =>
             {
                 services.AddHttpClient<IBinanceApi, BinanceApi>()
-                    .ConfigurePrimaryHttpMessageHandler((sp) =>
+                    .ConfigurePrimaryHttpMessageHandler(sp =>
                     {
                         var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
                         return new BinanceStubHttpMessageHandler(config);
@@ -26,7 +26,8 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
         }).CreateClient();
     }
 
-    [Fact]
+    [Trait("Category", "Integration test")]
+    [Fact(DisplayName = "Should return a current price from Binance")]
     public async Task GetCurrentPrice_ShouldReturnPrice()
     {
         var response = await _client.GetFromJsonAsync<CurrentPriceResponse>("api/broker/prices/current?symbol=BTCUSDT");
@@ -35,10 +36,13 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
         Assert.Equal("BTCUSDT", response.Symbol);
     }
 
-    [Fact]
+    [Trait("Category", "Integration test")]
+    [Fact(DisplayName = "Should return a historical price from Binance")]
     public async Task GetHistoricalPrice_ShouldReturnHistoricalPrices()
     {
-        var response = await _client.GetFromJsonAsync<HistoricalPriceResponse>("api/broker/prices/historical?symbol=BTCUSDT&interval=1h");
+        var response =
+            await _client.GetFromJsonAsync<HistoricalPriceResponse>(
+                "api/broker/prices/historical?symbol=BTCUSDT&interval=1h");
         Assert.NotNull(response);
         Assert.Equal(3, response.HistoricalPrices.Count);
     }

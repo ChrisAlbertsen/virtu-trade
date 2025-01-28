@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Service.Binance;
 
 namespace Api.Controllers;
 
@@ -26,12 +28,5 @@ public class BrokerController : ControllerBase
     {
         var historicalPriceResponse = await _brokerService.GetHistoricalPriceAsync(historicalPriceParams);
         return Ok(historicalPriceResponse);
-    }
-
-    [HttpPost("order")]
-    public async Task<IActionResult> PlaceOrder(string symbol, decimal quantity, string orderType)
-    {
-        await _brokerService.PlaceOrderAsync(symbol, quantity, orderType);
-        return Ok("Order placed successfully");
     }
 }
