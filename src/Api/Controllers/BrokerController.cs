@@ -1,16 +1,17 @@
 using System.Threading.Tasks;
-using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Persistence;
-using Service.Binance;
 using Service.Interfaces;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class BrokerController(IBrokerDataService brokerDataService, IBrokerOrderService brokerOrderService, ApplicationDatabaseContext dbContext)
+public class BrokerController(
+    IBrokerDataService brokerDataService,
+    IBrokerOrderService brokerOrderService,
+    ApplicationDatabaseContext dbContext)
     : ControllerBase
 {
     private readonly ApplicationDatabaseContext _dbContext = dbContext;
@@ -22,7 +23,7 @@ public class BrokerController(IBrokerDataService brokerDataService, IBrokerOrder
         //     .Add(new Book() { Content = "some context", Id = 1, Title = "some title" });
         //
         // await dbContext.SaveChangesAsync();
-        
+
         var price = await brokerDataService.GetCurrentPriceAsync(symbol);
         return Ok(price);
     }
@@ -36,6 +37,7 @@ public class BrokerController(IBrokerDataService brokerDataService, IBrokerOrder
 
     public async Task<IActionResult> CreateMarketOrder(string symbol, decimal quantity)
     {
-        var 
+        var orderFulfillmentResponse = await brokerOrderService.MarketOrder(symbol, quantity);
+        return Ok(orderFulfillmentResponse);
     }
 }
