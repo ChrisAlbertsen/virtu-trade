@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
 using Data.Models;
 using Infrastructure.Binance;
+using Service.Interfaces;
 
 namespace Service.Binance;
 
-public class BinanceBrokerService(IBinanceApi binanceApi) : IBrokerService
+public class BinanceBrokerDataService(IBinanceApi binanceApi) : IBrokerDataService
 {
     public async Task<CurrentPriceResponse> GetCurrentPriceAsync(string symbol)
     {

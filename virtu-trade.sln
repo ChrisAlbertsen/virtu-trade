@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Integration.Tests", "tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "src\Service\Service.csproj", "{50B6A27F-5B59-4510-AC66-1B7D6229AD36}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "src\Persistence\Persistence.csproj", "{E0F79215-6C7A-469F-8235-724AE2BF5D07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = DebFAug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{50B6A27F-5B59-4510-AC66-1B7D6229AD36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{50B6A27F-5B59-4510-AC66-1B7D6229AD36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{50B6A27F-5B59-4510-AC66-1B7D6229AD36}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0F79215-6C7A-469F-8235-724AE2BF5D07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0F79215-6C7A-469F-8235-724AE2BF5D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0F79215-6C7A-469F-8235-724AE2BF5D07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0F79215-6C7A-469F-8235-724AE2BF5D07}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7982B609-3164-4580-8188-A3509AE6F90C} = {8F865B44-F175-44FC-8182-B57D741DCDAD}

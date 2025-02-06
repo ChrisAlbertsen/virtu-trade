@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Data.Models;
 
-namespace Service.Binance;
+namespace Service.Interfaces;
 
-public interface IBrokerService
+public interface IBrokerDataService
 {
     Task<CurrentPriceResponse> GetCurrentPriceAsync(string symbol);
     Task<HistoricalPriceResponse> GetHistoricalPriceAsync(HistoricalPriceParams historicalPriceParams);
