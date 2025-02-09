@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Persistence;
 using Service.Binance;
 using Service.Interfaces;
-using Service.PaperBroker;
+using Service.Paper;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
@@ -23,6 +23,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<PaperBrokerOrderService>());
+
 
 builder.Services.AddScoped<IBrokerDataService, BinanceBrokerDataService>();
 builder.Services.AddScoped<IBrokerOrderService, PaperBrokerOrderService>();
