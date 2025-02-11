@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Data.DTOs;
-using Data.Models;
 
 namespace Service.Interfaces;
 

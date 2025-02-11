@@ -26,9 +26,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<PaperBrokerOrderService>());
 
-
 builder.Services.AddScoped<IBrokerDataService, BinanceBrokerDataService>();
 builder.Services.AddScoped<IBrokerOrderService, PaperBrokerOrderService>();
+builder.Services.AddScoped<IPaperTradeService, PaperTradeService>();
+builder.Services.AddScoped<IPaperHoldingService, PaperHoldingService>();
+builder.Services.AddScoped<IPortfolioService, PaperPortfolioService>();
 builder.Services.AddScoped<IBinanceApi, BinanceApi>();
 builder.Services.AddScoped<HttpClient>();
 

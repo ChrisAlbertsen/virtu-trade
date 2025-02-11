@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ public class BrokerController(
         var price = await brokerDataService.GetCurrentPriceAsync(symbol);
         return Ok(price);
     }
-
+    
     [HttpGet("prices/historical")]
     public async Task<IActionResult> GetHistoricalPrice([FromQuery] HistoricalPriceParams historicalPriceParams)
     {

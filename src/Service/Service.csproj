@@ -7,15 +7,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
-        <ProjectReference Include="..\Persistence\Persistence.csproj" />
+        <ProjectReference Include="..\Persistence\Persistence.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="12.4.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Paper\Mediator\Queries\" />
+        <PackageReference Include="MediatR" Version="12.4.1"/>
     </ItemGroup>
 
 </Project>
