@@ -1,8 +1,7 @@
-using System.Runtime.InteropServices.ComTypes;
+using System;
 using System.Threading.Tasks;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
-using Persistence;
 using Service.Interfaces;
 
 namespace Api.Controllers;
@@ -11,24 +10,16 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class BrokerController(
     IBrokerDataService brokerDataService,
-    IBrokerOrderService brokerOrderService,
-    ApplicationDatabaseContext dbContext)
+    IBrokerOrderService brokerOrderService)
     : ControllerBase
 {
-    private readonly ApplicationDatabaseContext _dbContext = dbContext;
-
     [HttpGet("prices/current")]
     public async Task<IActionResult> GetCurrentPrice(string symbol)
     {
-        // dbContext.Books
-        //     .Add(new Book() { Content = "some context", Id = 1, Title = "some title" });
-        //
-        // await dbContext.SaveChangesAsync();
-
         var price = await brokerDataService.GetCurrentPriceAsync(symbol);
         return Ok(price);
     }
-    
+
     [HttpGet("prices/historical")]
     public async Task<IActionResult> GetHistoricalPrice([FromQuery] HistoricalPriceParams historicalPriceParams)
     {
@@ -36,9 +27,10 @@ public class BrokerController(
         return Ok(historicalPriceResponse);
     }
 
-    public async Task<IActionResult> CreateMarketOrder(string symbol, decimal quantity)
+    [HttpPost("orders/create-market-order")]
+    public async Task<IActionResult> CreateMarketOrder(Guid portfolioId, string symbol, decimal quantity)
     {
-        var orderFulfillmentResponse = await brokerOrderService.MarketOrder(symbol, quantity);
+        var orderFulfillmentResponse = await brokerOrderService.MarketOrder(portfolioId, symbol, quantity);
         return Ok(orderFulfillmentResponse);
     }
 }
