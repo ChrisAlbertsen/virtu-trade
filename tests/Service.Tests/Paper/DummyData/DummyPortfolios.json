@@ -1,0 +1,184 @@
+﻿[
+  {
+    "Id": "f1a08336-8c0d-47d6-b2c0-e8d319a2d3b2",
+    "Cash": 50000.00,
+    "ReservedCash": 10000.00,
+    "Holdings": [
+      {
+        "Id": "d699ac38-ffb3-4569-bd4e-b5a0d8be92c7",
+        "PortfolioId": "f1a08336-8c0d-47d6-b2c0-e8d319a2d3b2",
+        "Symbol": "AAPL",
+        "Quantity": 15,
+        "AveragePurchasePrice": 145.50
+      },
+      {
+        "Id": "d41edb6e-6f5b-4a7e-9277-1c6634063b79",
+        "PortfolioId": "f1a08336-8c0d-47d6-b2c0-e8d319a2d3b2",
+        "Symbol": "GOOGL",
+        "Quantity": 5,
+        "AveragePurchasePrice": 2740.00
+      }
+    ]
+  },
+  {
+    "Id": "0f0bb478-3e6f-485f-b8e0-2c0b37631db2",
+    "Cash": 30000.00,
+    "ReservedCash": 5000.00,
+    "Holdings": [
+      {
+        "Id": "9fef7363-788a-4d6d-b5b7-0c87210e8f83",
+        "PortfolioId": "0f0bb478-3e6f-485f-b8e0-2c0b37631db2",
+        "Symbol": "BTCUSDT",
+        "Quantity": 0.5,
+        "AveragePurchasePrice": 45000.00
+      },
+      {
+        "Id": "41bde967-0533-4237-bc6b-447be717f897",
+        "PortfolioId": "0f0bb478-3e6f-485f-b8e0-2c0b37631db2",
+        "Symbol": "ETHUSDT",
+        "Quantity": 2,
+        "AveragePurchasePrice": 3500.00
+      }
+    ]
+  },
+  {
+    "Id": "a31cd5c7-c62d-4b60-8ac6-c1ab51cbdef6",
+    "Cash": 20000.00,
+    "ReservedCash": 2000.00,
+    "Holdings": [
+      {
+        "Id": "38c6f720-3b4d-44bb-bc9c-eec1a91aef63",
+        "PortfolioId": "a31cd5c7-c62d-4b60-8ac6-c1ab51cbdef6",
+        "Symbol": "MSFT",
+        "Quantity": 10,
+        "AveragePurchasePrice": 290.00
+      },
+      {
+        "Id": "3cf89d70-9b5e-4b5e-8151-fde4d59fe9b9",
+        "PortfolioId": "a31cd5c7-c62d-4b60-8ac6-c1ab51cbdef6",
+        "Symbol": "AMZN",
+        "Quantity": 5,
+        "AveragePurchasePrice": 3500.00
+      }
+    ]
+  },
+  {
+    "Id": "c3746a16-b49e-4268-bf29-11c8e52a3b7c",
+    "Cash": 15000.00,
+    "ReservedCash": 8000.00,
+    "Holdings": [
+      {
+        "Id": "b2f89bb5-75b0-4339-a11e-b3d22145a45d",
+        "PortfolioId": "c3746a16-b49e-4268-bf29-11c8e52a3b7c",
+        "Symbol": "AAPL",
+        "Quantity": 50,
+        "AveragePurchasePrice": 145.50
+      }
+    ]
+  },
+  {
+    "Id": "982c7b43-7a3f-487b-bf9c-24a55b6bfe38",
+    "Cash": 45000.00,
+    "ReservedCash": 10000.00,
+    "Holdings": [
+      {
+        "Id": "7f07f73d-2c3f-4772-8b67-fb3cf45a4d0e",
+        "PortfolioId": "982c7b43-7a3f-487b-bf9c-24a55b6bfe38",
+        "Symbol": "VTI",
+        "Quantity": 30,
+        "AveragePurchasePrice": 211.00
+      },
+      {
+        "Id": "effee559-9b98-4501-90da-ec90698fa4ca",
+        "PortfolioId": "982c7b43-7a3f-487b-bf9c-24a55b6bfe38",
+        "Symbol": "SPY",
+        "Quantity": 20,
+        "AveragePurchasePrice": 380.00
+      }
+    ]
+  },
+  {
+    "Id": "fb38b66d-e387-4b16-b0a2-824b0d94cf23",
+    "Cash": 30000.00,
+    "ReservedCash": 15000.00,
+    "Holdings": [
+      {
+        "Id": "2fcd1a36-66ac-4d53-bef7-0c9f0e1e7db6",
+        "PortfolioId": "fb38b66d-e387-4b16-b0a2-824b0d94cf23",
+        "Symbol": "TSLA",
+        "Quantity": 10,
+        "AveragePurchasePrice": 800.00
+      }
+    ]
+  },
+  {
+    "Id": "db681945-e905-45b2-b0b2-9603f1a2a1a9",
+    "Cash": 10000.00,
+    "ReservedCash": 3000.00,
+    "Holdings": [
+      {
+        "Id": "7e88a1cc-d1d7-4ea4-b0e4-dbd52f1c4b94",
+        "PortfolioId": "db681945-e905-45b2-b0b2-9603f1a2a1a9",
+        "Symbol": "T",
+        "Quantity": 150,
+        "AveragePurchasePrice": 29.00
+      },
+      {
+        "Id": "3d6f569f-0b9b-48cf-bdb4-b7a8506c54d2",
+        "PortfolioId": "db681945-e905-45b2-b0b2-9603f1a2a1a9",
+        "Symbol": "VZ",
+        "Quantity": 100,
+        "AveragePurchasePrice": 58.00
+      }
+    ]
+  },
+  {
+    "Id": "d5136e61-513f-43e9-bfe5-708e4c75b835",
+    "Cash": 75000.00,
+    "ReservedCash": 5000.00,
+    "Holdings": [
+      {
+        "Id": "34ff5ff3-5ebf-46d9-926b-780b75a0ca14",
+        "PortfolioId": "d5136e61-513f-43e9-bfe5-708e4c75b835",
+        "Symbol": "GOOGL",
+        "Quantity": 20,
+        "AveragePurchasePrice": 2740.00
+      }
+    ]
+  },
+  {
+    "Id": "1bfb9ec0-e8e2-43cc-8b6a-6f91b73e2f79",
+    "Cash": 22000.00,
+    "ReservedCash": 3000.00,
+    "Holdings": [
+      {
+        "Id": "04c5ed71-0534-4a0c-97d3-d90a5988b728",
+        "PortfolioId": "1bfb9ec0-e8e2-43cc-8b6a-6f91b73e2f79",
+        "Symbol": "BTCUSDT",
+        "Quantity": 0.3,
+        "AveragePurchasePrice": 45000.00
+      }
+    ]
+  },
+  {
+    "Id": "492ae9c9-c271-4090-b9f5-2c5b88e96d98",
+    "Cash": 12000.00,
+    "ReservedCash": 5000.00,
+    "Holdings": [
+      {
+        "Id": "70b4f07d-34f3-4b64-9137-39f3c4905c0c",
+        "PortfolioId": "492ae9c9-c271-4090-b9f5-2c5b88e96d98",
+        "Symbol": "AAPL",
+        "Quantity": 25,
+        "AveragePurchasePrice": 145.50
+      },
+      {
+        "Id": "8ad8cb77-d04e-4333-b14b-e0bc72f59ed9",
+        "PortfolioId": "492ae9c9-c271-4090-b9f5-2c5b88e96d98",
+        "Symbol": "AMZN",
+        "Quantity": 3,
+        "AveragePurchasePrice": 3500.00
+      }
+    ]
+  }
+]

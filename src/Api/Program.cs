@@ -24,11 +24,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<PaperBrokerOrderService>());
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<PaperOrderService>());
 
 builder.Services.AddScoped<IBrokerDataService, BinanceBrokerDataService>();
-builder.Services.AddScoped<IBrokerOrderService, PaperBrokerOrderService>();
-builder.Services.AddScoped<IPaperBrokerOrderService, PaperBrokerOrderService>();
+builder.Services.AddScoped<IBrokerOrderService, PaperOrderService>();
+builder.Services.AddScoped<IPaperBrokerOrderService, PaperOrderService>();
 builder.Services.AddScoped<IBinanceApi, BinanceApi>();
 builder.Services.AddScoped<HttpClient>();
 

@@ -10,9 +10,4 @@ public class Portfolio
     public required decimal ReservedCash { get; set; }
 
     public required ICollection<Holding> Holdings { get; set; } = new List<Holding>();
-
-    public bool HasSufficientCash(decimal neededCash)
-    {
-        return Cash >= neededCash;
-    }
 }
