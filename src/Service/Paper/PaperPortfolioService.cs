@@ -83,6 +83,14 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
             .FirstOrDefaultAsync(p => p.Id == portfolioId);
     }
 
+    public async Task<Portfolio?> GetPortfolioWithHoldingsAsync(Guid portfolioId)
+    {
+        return await dbContext
+            .Portfolios
+            .Include(h => h.Holdings)
+            .FirstOrDefaultAsync(p => p.Id == portfolioId);
+    }
+
     private bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)
     {
         return portfolio.Cash >= neededCash;

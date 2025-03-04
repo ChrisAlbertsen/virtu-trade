@@ -15,4 +15,5 @@ public interface IPaperPortfolioService
     Task PayReservedCash(Guid portfolioId, decimal cashToPay);
     Task UnreserveCash(Guid portfolioId, decimal cashToUnreserve);
     Task<Portfolio?> GetPortfolioAsync(Guid portfolioId);
+    Task<Portfolio?> GetPortfolioWithHoldingsAsync(Guid portfolioId);
 }
