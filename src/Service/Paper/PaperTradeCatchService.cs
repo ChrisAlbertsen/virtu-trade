@@ -6,7 +6,7 @@ using Service.Interfaces;
 
 namespace Service.Paper;
 
-internal class PaperTradeCatchService(IPaperPortfolioService portfolioService, ApplicationDatabaseContext dbContext)
+public class PaperTradeCatchService(IPaperPortfolioService portfolioService, ApplicationDatabaseContext dbContext)
     : IPaperTradeCatchService
 {
     public async Task CatchTrade(Guid portfolioId, string symbol, decimal quantity, decimal price)

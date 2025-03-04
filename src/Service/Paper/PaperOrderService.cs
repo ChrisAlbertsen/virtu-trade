@@ -25,7 +25,8 @@ public class PaperOrderService(
         }
         catch (Exception e)
         {
-            logger.LogError("An exception occured during catching a market order trade with {ExceptionMessage}", e.Message);
+            logger.LogError("An exception occured during catching a market order trade with {ExceptionMessage}",
+                e.Message);
             await paperPortfolioService.UnreserveCash(portfolioId, orderValue);
             throw;
         }

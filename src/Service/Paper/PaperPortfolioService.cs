@@ -67,11 +67,6 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
         await dbContext.SaveChangesAsync();
     }
 
-    private bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)
-    {
-        return portfolio.Cash >= neededCash;
-    }
-
     public async Task UnreserveCash(Guid portfolioId, decimal cashToUnreserve)
     {
         var portfolio = await GetPortfolioAsync(portfolioId);
@@ -86,5 +81,10 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
         return await dbContext
             .Portfolios
             .FirstOrDefaultAsync(p => p.Id == portfolioId);
+    }
+
+    private bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)
+    {
+        return portfolio.Cash >= neededCash;
     }
 }

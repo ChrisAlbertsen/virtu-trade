@@ -18,19 +18,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 builder.Services.AddDbContext<ApplicationDatabaseContext>(options => options.UseNpgsql(connectionString));
+
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddScoped<IBrokerDataService, BinanceBrokerDataService>();
+builder.Services.AddScoped<IBrokerOrderService, PaperOrderService>();
+builder.Services.AddScoped<IPaperPortfolioService, PaperPortfolioService>();
+builder.Services.AddScoped<IPaperTradeCatchService, PaperTradeCatchService>();
+builder.Services.AddScoped<IBinanceApi, BinanceApi>();
+builder.Services.AddScoped<HttpClient>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<PaperOrderService>());
-
-builder.Services.AddScoped<IBrokerDataService, BinanceBrokerDataService>();
-builder.Services.AddScoped<IBrokerOrderService, PaperOrderService>();
-builder.Services.AddScoped<IPaperBrokerOrderService, PaperOrderService>();
-builder.Services.AddScoped<IBinanceApi, BinanceApi>();
-builder.Services.AddScoped<HttpClient>();
 
 builder.Services.Configure<BinanceApiSettings>(builder.Configuration.GetSection("BinanceApi"));
 
