@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities;
-using Data.Exceptions;
+using Exceptions.PortfolioExceptions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Service.Interfaces;
@@ -52,7 +52,7 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
     {
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
-        if (!PortfolioHasSufficientCash(portfolio, cashToReserve)) throw new PortfolioLacksCash(portfolioId);
+        if (!PortfolioHasSufficientCash(portfolio, cashToReserve)) throw new PortfolioLacksCashException(portfolioId);
 
         portfolio.Cash -= cashToReserve;
         portfolio.ReservedCash += cashToReserve;
