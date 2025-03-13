@@ -1,5 +1,5 @@
-﻿using Data.Models;
-using Data.Models.BaseModels;
+﻿using Data.DTOs.BaseModels;
+using Data.DTOs.HistoricalPrice;
 using JetBrains.Annotations;
 
 namespace Data.Tests.Models.BaseModels;

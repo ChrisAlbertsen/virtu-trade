@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data.DTOs;
+using Data.DTOs.Orders;
 
 namespace Service.Interfaces;
 
 public interface IBrokerOrderService
 {
-    Task<OrderFulfillmentResponse> MarketOrder(Guid portfolioId, string symbol, decimal quantity);
+    Task<OrderFulfillmentResponse> ExecuteMarketOrder(MarketOrderParams marketOrderParams);
 }

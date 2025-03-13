@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Data.DTOs.Interfaces;
 using Data.Entities;
 using Persistence;
 using Service.Interfaces;
@@ -9,51 +10,54 @@ namespace Service.Paper;
 public class PaperTradeCatchService(IPaperPortfolioService portfolioService, ApplicationDatabaseContext dbContext)
     : IPaperTradeCatchService
 {
-    public async Task CatchTrade(Guid portfolioId, string symbol, decimal quantity, decimal price)
+    public async Task CatchTrade(IOrder order)
     {
-        var holdings = await portfolioService.GetHoldingsAsync(portfolioId);
-        var holding = portfolioService.FindHoldingWithSymbol(holdings, symbol);
-        AddTrade(portfolioId, symbol, quantity, price);
+        var holding = await portfolioService.FindHoldingWithSymbol(order.PortfolioId, order.Symbol);
+        AddTrade(order);
 
         if (holding is null)
         {
-            dbContext.Holdings.Add(new Holding
-            {
-                Id = Guid.NewGuid(),
-                PortfolioId = portfolioId,
-                Symbol = symbol,
-                Quantity = quantity,
-                AveragePurchasePrice = price
-            });
-            await dbContext.SaveChangesAsync();
+            AddHolding(order);
+            await dbContext.EnsuredSaveChangesAsync();
             return;
         }
-
-        holding.Quantity += quantity;
-
+        
+        holding.Quantity += order.Quantity;
         if (holding.Quantity == 0)
         {
             dbContext.Holdings.Remove(holding);
-            await dbContext.SaveChangesAsync();
+            await dbContext.EnsuredSaveChangesAsync();
             return;
         }
 
-        holding.AveragePurchasePrice = CalculateNewAveragePrice(holding, quantity, price);
+        holding.AveragePurchasePrice = CalculateNewAveragePrice(holding, order.Quantity, order.Price);
 
         dbContext.Holdings.Update(holding);
-        await dbContext.SaveChangesAsync();
+        await dbContext.EnsuredSaveChangesAsync();
     }
 
-    private void AddTrade(Guid portfolioId, string symbol, decimal quantity, decimal price)
+    private void AddHolding(IOrder order)
+    {
+        dbContext.Holdings.Add(new Holding
+        {
+            Id = Guid.NewGuid(),
+            PortfolioId = order.PortfolioId,
+            Symbol = order.Symbol,
+            Quantity = order.Quantity,
+            AveragePurchasePrice = order.Price
+        });
+    }
+
+    private void AddTrade(IOrder order)
     {
         dbContext.Trades.Add(
             new Trade
             {
                 Id = Guid.NewGuid(),
-                PortfolioId = portfolioId,
-                Symbol = symbol,
-                Quantity = quantity,
-                Price = price,
+                PortfolioId = order.PortfolioId,
+                Symbol = order.Symbol,
+                Quantity = order.Quantity,
+                Price = order.Price,
                 TradeDateTime = DateTime.UtcNow
             });
     }

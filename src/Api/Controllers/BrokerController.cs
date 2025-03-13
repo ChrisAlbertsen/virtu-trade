@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using Data.Models;
+using Data.DTOs.HistoricalPrice;
+using Data.DTOs.Orders;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 
@@ -27,10 +28,10 @@ public class BrokerController(
         return Ok(historicalPriceResponse);
     }
 
-    [HttpPost("orders/create-market-order")]
-    public async Task<IActionResult> CreateMarketOrder(Guid portfolioId, string symbol, decimal quantity)
+    [HttpPost("orders/execute-market-order")]
+    public async Task<IActionResult> ExecuteMarketOrder(MarketOrderParams marketOrderParams)
     {
-        var orderFulfillmentResponse = await brokerOrderService.MarketOrder(portfolioId, symbol, quantity);
+        var orderFulfillmentResponse = await brokerOrderService.ExecuteMarketOrder(marketOrderParams);
         return Ok(orderFulfillmentResponse);
     }
 }

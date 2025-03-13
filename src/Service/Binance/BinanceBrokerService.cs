@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
-using Data.Models;
+using Data.DTOs.CurrentPrice;
+using Data.DTOs.HistoricalPrice;
 using Infrastructure.Binance;
 
 namespace Service.Binance;

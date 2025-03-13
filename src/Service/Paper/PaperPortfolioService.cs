@@ -20,9 +20,11 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
             .ToListAsync();
     }
 
-    public Holding? FindHoldingWithSymbol(List<Holding> holdings, string symbol)
+    public async Task<Holding?> FindHoldingWithSymbol(Guid portfolioId, string symbol)
     {
-        return holdings.Find(h => h.Symbol == symbol) ?? null;
+        return await dbContext
+            .Holdings
+            .FirstOrDefaultAsync(h => h.Symbol == symbol && h.PortfolioId == portfolioId);
     }
 
     public async Task<Portfolio> CreatePortfolio()
@@ -36,7 +38,7 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
         };
 
         dbContext.Portfolios.Add(portfolio);
-        await dbContext.SaveChangesAsync();
+        await dbContext.EnsuredSaveChangesAsync();
         return portfolio;
     }
 
@@ -45,7 +47,7 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.Cash += moneyToDeposit;
-        await dbContext.SaveChangesAsync();
+        await dbContext.EnsuredSaveChangesAsync();
     }
 
     public async Task CheckAndReserveCashAmountAsync(Guid portfolioId, decimal cashToReserve)
@@ -56,7 +58,7 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
 
         portfolio.Cash -= cashToReserve;
         portfolio.ReservedCash += cashToReserve;
-        await dbContext.SaveChangesAsync();
+        await dbContext.EnsuredSaveChangesAsync();
     }
 
     public async Task PayReservedCash(Guid portfolioId, decimal cashToPay)
@@ -64,7 +66,7 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.ReservedCash -= cashToPay;
-        await dbContext.SaveChangesAsync();
+        await dbContext.EnsuredSaveChangesAsync();
     }
 
     public async Task UnreserveCash(Guid portfolioId, decimal cashToUnreserve)
@@ -73,7 +75,7 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.ReservedCash -= cashToUnreserve;
         portfolio.Cash += cashToUnreserve;
-        await dbContext.SaveChangesAsync();
+        await dbContext.EnsuredSaveChangesAsync(1);
     }
 
     public async Task<Portfolio?> GetPortfolioAsync(Guid portfolioId)

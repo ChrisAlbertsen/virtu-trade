@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Data.DTOs.CurrentPrice;
+using Data.DTOs.HistoricalPrice;
 using Infrastructure.Binance;
 using JetBrains.Annotations;
 using Moq;

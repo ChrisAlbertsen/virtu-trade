@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Data.DTOs;
+namespace Data.DTOs.Orders;
 
 public class OrderFulfillmentResponse
 {

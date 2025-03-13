@@ -1,12 +1,4 @@
-﻿#services:
-#  api:
-#    image: api
-#    build:
-#      context: .
-#      dockerfile: src/Api/Dockerfile
-
-
-version: '3.4'
+﻿version: '3.4'
 
 services:
   postgres_image:

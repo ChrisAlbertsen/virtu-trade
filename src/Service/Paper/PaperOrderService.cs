@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data.DTOs;
+using Data.DTOs.BaseModels;
+using Data.DTOs.Interfaces;
+using Data.DTOs.Orders;
 using Microsoft.Extensions.Logging;
 using Service.Interfaces;
 
@@ -13,32 +15,50 @@ public class PaperOrderService(
     ILogger<PaperOrderService> logger)
     : IBrokerOrderService
 {
-    public async Task<OrderFulfillmentResponse> MarketOrder(Guid portfolioId, string symbol, decimal quantity)
-    {
-        var currentPriceResponse = await brokerDataService.GetCurrentPriceAsync(symbol);
-        var orderValue = currentPriceResponse.Price * quantity;
-        await paperPortfolioService.CheckAndReserveCashAmountAsync(portfolioId, orderValue);
 
+    public async Task<OrderFulfillmentResponse> ExecuteMarketOrder(MarketOrderParams marketOrderParams)
+    {
+        var marketOrder = await CreateMarketOrder(marketOrderParams);
+        return await ResolveOrder(marketOrder);
+    }
+    private async Task<MarketOrder> CreateMarketOrder(MarketOrderParams marketOrderParams)
+    {
+        var currentPriceResponse = await brokerDataService.GetCurrentPriceAsync(marketOrderParams.Symbol);
+
+        return new MarketOrder(
+            currentPriceResponse.Price,
+            marketOrderParams.PortfolioId,
+            marketOrderParams.Symbol,
+            marketOrderParams.Quantity
+        );
+    }
+
+    private async Task<OrderFulfillmentResponse> ResolveOrder(IOrder order)
+    {
+        await paperPortfolioService.CheckAndReserveCashAmountAsync(order.PortfolioId, order.Price);
+        
         try
         {
-            await paperTradeCatchService.CatchTrade(portfolioId, symbol, quantity, currentPriceResponse.Price);
+            await paperTradeCatchService.CatchTrade(order);
         }
         catch (Exception e)
         {
-            logger.LogError("An exception occured during catching a market order trade with {ExceptionMessage}",
+            logger.LogError("An exception occured during catching a market order trade for {portfolioId} on {symbol} with {ExceptionMessage}",
+                order.PortfolioId,
+                order.Symbol,
                 e.Message);
-            await paperPortfolioService.UnreserveCash(portfolioId, orderValue);
+            await paperPortfolioService.UnreserveCash(order.PortfolioId, order.OrderValue);
             throw;
         }
 
-        await paperPortfolioService.PayReservedCash(portfolioId, orderValue);
+        await paperPortfolioService.PayReservedCash(order.PortfolioId, order.OrderValue);
 
         return new OrderFulfillmentResponse
         {
             Id = Guid.NewGuid(),
-            Symbol = symbol,
-            Price = currentPriceResponse.Price,
-            Quantity = quantity
+            Symbol = order.Symbol,
+            Price = order.Price,
+            Quantity = order.Quantity
         };
     }
 }

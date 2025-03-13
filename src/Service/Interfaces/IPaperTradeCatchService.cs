@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Data.DTOs.Interfaces;
 
 namespace Service.Interfaces;
 
 public interface IPaperTradeCatchService
 {
-    Task CatchTrade(Guid portfolioId, string symbol, decimal quantity, decimal price);
+    Task CatchTrade(IOrder order);
 }
