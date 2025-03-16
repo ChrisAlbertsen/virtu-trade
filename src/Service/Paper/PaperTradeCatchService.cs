@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using Data.DTOs.Interfaces;
 using Data.Entities;
 using Persistence;
+using Persistence.Auth;
 using Service.Interfaces;
 
 namespace Service.Paper;
 
-public class PaperTradeCatchService(IPaperPortfolioService portfolioService, ApplicationDatabaseContext dbContext)
+public class PaperTradeCatchService(IPaperPortfolioService portfolioService, AppDbContext dbContext)
     : IPaperTradeCatchService
 {
     public async Task CatchTrade(IOrder order)
