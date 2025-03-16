@@ -1,6 +1,4 @@
-﻿version: '3.4'
-
-services:
+﻿services:
   postgres_image:
     image: postgres:latest
     ports:

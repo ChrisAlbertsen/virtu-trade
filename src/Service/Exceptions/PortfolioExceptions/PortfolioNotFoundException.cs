@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Exceptions.PortfolioExceptions;
+namespace Service.Exceptions.PortfolioExceptions;
 
 public class PortfolioNotFoundException : Exception
 {

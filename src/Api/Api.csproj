@@ -27,4 +27,8 @@
         <ProjectReference Include="..\Service\Service.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Environments\Local.json" />
+    </ItemGroup>
+
 </Project>

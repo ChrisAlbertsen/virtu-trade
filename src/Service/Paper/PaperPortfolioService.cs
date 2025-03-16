@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data.Entities;
-using Exceptions.PortfolioExceptions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Service.Exceptions.PortfolioExceptions;
 using Service.Interfaces;
 
 namespace Service.Paper;
