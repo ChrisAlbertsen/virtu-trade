@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace Data.Models.BaseModels;
+namespace Data.DTOs.BaseModels;
 
 public abstract class BaseQueryParamModel
 {

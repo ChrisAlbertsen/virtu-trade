@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Data.Models;
+using Data.DTOs.CurrentPrice;
+using Data.DTOs.HistoricalPrice;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.Binance;

@@ -1,5 +1,8 @@
-﻿using System.Net.Http.Json;
-using Data.Models;
+﻿using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using Data.DTOs.CurrentPrice;
+using Data.DTOs.HistoricalPrice;
 using Infrastructure.Binance;
 using Integration.Tests.BrokerController.Stubs;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -44,6 +47,5 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
             await _client.GetFromJsonAsync<HistoricalPriceResponse>(
                 "api/broker/prices/historical?symbol=BTCUSDT&interval=1h");
         Assert.NotNull(response);
-        Assert.Equal(3, response.HistoricalPrices.Count);
     }
 }

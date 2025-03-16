@@ -1,6 +1,6 @@
-﻿using Data.Models.BaseModels;
+﻿using Data.DTOs.BaseModels;
 
-namespace Data.Models;
+namespace Data.DTOs.HistoricalPrice;
 
 public class HistoricalPriceParams : BaseQueryParamModel
 {
