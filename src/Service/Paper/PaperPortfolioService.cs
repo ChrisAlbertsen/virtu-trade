@@ -10,7 +10,7 @@ using Service.Interfaces;
 
 namespace Service.Paper;
 
-public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPaperPortfolioService
+public class PaperPortfolioService(AppDbContext dbContext) : IPaperPortfolioService
 {
     public async Task<List<Holding>> GetHoldingsAsync(Guid portfolioId)
     {
