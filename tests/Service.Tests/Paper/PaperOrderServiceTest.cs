@@ -37,7 +37,7 @@ public class PaperOrderServiceTests
         var symbol = It.IsAny<string>();
         var quantity = It.IsAny<int>();
         var price = It.IsAny<decimal>();
-        var order = new MarketOrder(price, portfolioId, symbol, quantity);
+        var order = new MarketOrder(portfolioId,symbol, quantity,price);
         var marketOrderParams = new MarketOrderParams() {PortfolioId = portfolioId, Quantity = quantity, Symbol = symbol};
 
         var expectedResponse = new CurrentPriceResponse { Symbol = symbol, Price = price };
@@ -58,20 +58,18 @@ public class PaperOrderServiceTests
     [Fact(DisplayName = "Should unreserve cash and throw exception")]
     public async Task MarketOrder_ShouldUnreserveCashAndThrowException()
     {
-        var expectedErrorMessage = It.IsAny<string>();
+        var expectedErrorMessage = "Some error message";
         
         var portfolioId = It.IsAny<Guid>();
         var symbol = It.IsAny<string>();
         var quantity = It.IsAny<int>();
         var price = It.IsAny<decimal>();
-        var order = new MarketOrder(price, portfolioId, symbol, quantity);
         var marketOrderParams = new MarketOrderParams() {PortfolioId = portfolioId, Quantity = quantity, Symbol = symbol};
 
         var expectedResponse = new CurrentPriceResponse { Symbol = symbol, Price = price };
         _brokerDataService.Setup(api => api.GetCurrentPriceAsync(symbol)).ReturnsAsync(expectedResponse);
-        _paperTradeCatchService.Setup(api => api.CatchTrade(order))
+        _paperTradeCatchService.Setup(api => api.CatchTrade(It.IsAny<MarketOrder>()))
             .Throws(new Exception(expectedErrorMessage));
-
         var exception = await Assert.ThrowsAsync<Exception>(() => _paperOrderService.ExecuteMarketOrder(marketOrderParams));
         Assert.Equal(expectedErrorMessage, exception.Message);
         _paperPortfolioService.Verify(api => api.UnreserveCash(portfolioId, It.IsAny<decimal>()), Times.Once);
