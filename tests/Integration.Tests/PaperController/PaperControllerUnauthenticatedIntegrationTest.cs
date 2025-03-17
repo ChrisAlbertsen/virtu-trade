@@ -7,6 +7,8 @@ using Data.Entities;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
 
+namespace Integration.Tests.PaperController;
+
 public class PaperControllerUnauthenticatedIntegrationTest : IClassFixture<WebApplicationFactory<Program>>
 {
     private readonly HttpClient _client;
