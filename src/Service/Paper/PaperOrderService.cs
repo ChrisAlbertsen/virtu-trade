@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Data.DTOs.BaseModels;
-using Data.DTOs.Interfaces;
 using Data.DTOs.Orders;
 using Microsoft.Extensions.Logging;
 using Service.Interfaces;
@@ -26,14 +25,14 @@ public class PaperOrderService(
         var currentPriceResponse = await brokerDataService.GetCurrentPriceAsync(marketOrderParams.Symbol);
 
         return new MarketOrder(
-            currentPriceResponse.Price,
             marketOrderParams.PortfolioId,
             marketOrderParams.Symbol,
+            currentPriceResponse.Price,
             marketOrderParams.Quantity
         );
     }
 
-    private async Task<OrderFulfillmentResponse> ResolveOrder(IOrder order)
+    private async Task<OrderFulfillmentResponse> ResolveOrder(BaseOrder order)
     {
         await paperPortfolioService.CheckAndReserveCashAmountAsync(order.PortfolioId, order.Price);
         
