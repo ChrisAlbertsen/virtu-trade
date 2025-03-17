@@ -9,14 +9,10 @@ using Moq;
 
 namespace Integration.Tests.PaperController;
 
-public class PaperControllerUnauthenticatedIntegrationTest : IClassFixture<WebApplicationFactory<Program>>
+public class PaperControllerUnauthenticatedIntegrationTest(WebApplicationFactory<Program> factory)
+    : IClassFixture<WebApplicationFactory<Program>>
 {
-    private readonly HttpClient _client;
-
-    public PaperControllerUnauthenticatedIntegrationTest(WebApplicationFactory<Program> factory)
-    {
-        _client = factory.CreateClient();
-    }
+    private readonly HttpClient _client = factory.CreateClient();
 
     [Trait("Category", "Integration test")]
     [Fact(DisplayName = "Not authenticated. Should return 401")]
