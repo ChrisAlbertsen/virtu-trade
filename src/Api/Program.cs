@@ -39,8 +39,9 @@ builder.Services.AddScoped<HttpClient>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+
 builder.Services.AddAuthorization();
+builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddApiEndpoints();

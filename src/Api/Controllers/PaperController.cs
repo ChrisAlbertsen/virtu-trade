@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 
 namespace Api.Controllers;
-
+[Authorize]
 public class PaperController(IPaperPortfolioService paperPortfolioService) : ControllerBase
 {
     [HttpPost("paper/create-portfolio")]
