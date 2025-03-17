@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 
 namespace Api.Controllers;
+
+[ApiController]
+[Route("api/paper/[controller]")]
 [Authorize]
 public class PaperController(IPaperPortfolioService paperPortfolioService) : ControllerBase
 {
