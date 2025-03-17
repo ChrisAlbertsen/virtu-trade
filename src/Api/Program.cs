@@ -1,12 +1,17 @@
 using System.Globalization;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Infrastructure.Binance;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Persistence;
+using Persistence.Auth;
 using Service.Binance;
 using Service.Interfaces;
 using Service.Paper;
@@ -19,7 +24,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpLogging(o => { });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
-builder.Services.AddDbContext<ApplicationDatabaseContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -34,11 +41,32 @@ builder.Services.AddScoped<HttpClient>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme, options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        return Task.CompletedTask;
+    };
+});
+
+
+builder.Services.AddIdentityCore<User>()
+    .AddEntityFrameworkStores<AuthDbContext>()
+    .AddApiEndpoints();
+
+
 builder.Services.Configure<BinanceApiSettings>(builder.Configuration.GetSection("BinanceApi"));
 
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -54,6 +82,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapIdentityApi<User>();
 
 app.Run();
 

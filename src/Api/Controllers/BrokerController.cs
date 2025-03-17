@@ -1,7 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using Data.DTOs.HistoricalPrice;
 using Data.DTOs.Orders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
 
@@ -9,6 +9,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class BrokerController(
     IBrokerDataService brokerDataService,
     IBrokerOrderService brokerOrderService)

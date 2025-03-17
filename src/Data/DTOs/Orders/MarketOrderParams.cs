@@ -8,5 +8,3 @@ public class MarketOrderParams
     public required string Symbol { get; set; }
     public required decimal Quantity { get; set; }
 }
-    
-    

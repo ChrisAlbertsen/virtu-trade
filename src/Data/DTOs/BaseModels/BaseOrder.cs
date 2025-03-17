@@ -2,12 +2,13 @@
 
 namespace Data.DTOs.BaseModels;
 
-public abstract class BaseOrder
+public abstract class BaseOrder(Guid portfolioId, string symbol, decimal quantity, decimal price)
 {
-    public required Guid Id { get; set; }
-    public required Guid PortfolioId { get; set; }
-    public required string Symbol { get; set; }
-    public required decimal Quantity { get; set; }
-    public required decimal Price { get; set; }
+    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid PortfolioId { get; init; } = portfolioId;
+    public string Symbol { get; init; } = symbol;
+    public decimal Quantity { get; init; } = quantity;
+    public decimal Price { get; init; } = price;
+
     public decimal OrderValue => Quantity * Price;
 }

@@ -10,7 +10,7 @@ using Service.Interfaces;
 
 namespace Service.Paper;
 
-public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPaperPortfolioService
+public class PaperPortfolioService(AppDbContext dbContext) : IPaperPortfolioService
 {
     public async Task<List<Holding>> GetHoldingsAsync(Guid portfolioId)
     {
@@ -75,7 +75,7 @@ public class PaperPortfolioService(ApplicationDatabaseContext dbContext) : IPape
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.ReservedCash -= cashToUnreserve;
         portfolio.Cash += cashToUnreserve;
-        await dbContext.EnsuredSaveChangesAsync(1);
+        await dbContext.EnsuredSaveChangesAsync();
     }
 
     public async Task<Portfolio?> GetPortfolioAsync(Guid portfolioId)
