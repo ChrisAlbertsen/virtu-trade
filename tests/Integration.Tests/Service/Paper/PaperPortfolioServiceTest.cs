@@ -1,7 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Moq;
 using Persistence;
-using Persistence.Auth;
 using Service.Paper;
 
 namespace Integration.Tests.Service.Paper;

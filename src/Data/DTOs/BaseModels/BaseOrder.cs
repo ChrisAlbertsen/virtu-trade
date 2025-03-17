@@ -9,6 +9,6 @@ public abstract class BaseOrder(Guid portfolioId, string symbol, decimal quantit
     public string Symbol { get; init; } = symbol;
     public decimal Quantity { get; init; } = quantity;
     public decimal Price { get; init; } = price;
-    
+
     public decimal OrderValue => Quantity * Price;
 }

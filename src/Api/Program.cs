@@ -1,7 +1,9 @@
 using System.Globalization;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Infrastructure.Binance;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +21,7 @@ CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpLogging(o => {});
+builder.Services.AddHttpLogging(o => { });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connectionString));
@@ -41,7 +43,22 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
+builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme, options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        return Task.CompletedTask;
+    };
+});
+
+
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddApiEndpoints();

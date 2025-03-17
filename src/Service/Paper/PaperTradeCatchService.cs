@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Data.DTOs.BaseModels;
 using Data.Entities;
 using Persistence;
-using Persistence.Auth;
 using Service.Interfaces;
 
 namespace Service.Paper;
@@ -22,7 +21,7 @@ public class PaperTradeCatchService(IPaperPortfolioService portfolioService, App
             await dbContext.EnsuredSaveChangesAsync();
             return;
         }
-        
+
         holding.Quantity += order.Quantity;
         if (holding.Quantity == 0)
         {

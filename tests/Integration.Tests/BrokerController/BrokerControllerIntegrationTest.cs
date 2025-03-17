@@ -22,10 +22,10 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
         {
             builder.ConfigureTestServices(services =>
             {
-                services.AddAuthentication(defaultScheme: "TestScheme")
+                services.AddAuthentication("TestScheme")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
                         "TestScheme", options => { });
-                
+
                 services.AddHttpClient<IBinanceApi, BinanceApi>()
                     .ConfigurePrimaryHttpMessageHandler(sp =>
                     {

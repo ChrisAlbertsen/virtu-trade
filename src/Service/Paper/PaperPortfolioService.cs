@@ -75,7 +75,7 @@ public class PaperPortfolioService(AppDbContext dbContext) : IPaperPortfolioServ
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.ReservedCash -= cashToUnreserve;
         portfolio.Cash += cashToUnreserve;
-        await dbContext.EnsuredSaveChangesAsync(1);
+        await dbContext.EnsuredSaveChangesAsync();
     }
 
     public async Task<Portfolio?> GetPortfolioAsync(Guid portfolioId)
