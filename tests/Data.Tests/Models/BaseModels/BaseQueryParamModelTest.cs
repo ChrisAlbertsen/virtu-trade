@@ -13,6 +13,6 @@ public class BaseQueryParamModelTest
         var historicalPriceParams = new HistoricalPriceParams { Symbol = "USD", Interval = "s" };
         var result = historicalPriceParams.ToDictionary();
         Assert.Equal(2, result.Count());
-        Assert.Equal("USD", result["Symbol"]);
+        Assert.Equal("USD", result["symbol"]);
     }
 }
