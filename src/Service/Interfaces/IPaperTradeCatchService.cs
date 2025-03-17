@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data.DTOs.Interfaces;
+using Data.DTOs.BaseModels;
 
 namespace Service.Interfaces;
 
 public interface IPaperTradeCatchService
 {
-    Task CatchTrade(IOrder order);
+    Task CatchTrade(BaseOrder order);
 }

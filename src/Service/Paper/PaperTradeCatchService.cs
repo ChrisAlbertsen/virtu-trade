@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data.DTOs.Interfaces;
+using Data.DTOs.BaseModels;
 using Data.Entities;
 using Persistence;
 using Persistence.Auth;
@@ -11,7 +11,7 @@ namespace Service.Paper;
 public class PaperTradeCatchService(IPaperPortfolioService portfolioService, AppDbContext dbContext)
     : IPaperTradeCatchService
 {
-    public async Task CatchTrade(IOrder order)
+    public async Task CatchTrade(BaseOrder order)
     {
         var holding = await portfolioService.FindHoldingWithSymbol(order.PortfolioId, order.Symbol);
         AddTrade(order);
@@ -37,7 +37,7 @@ public class PaperTradeCatchService(IPaperPortfolioService portfolioService, App
         await dbContext.EnsuredSaveChangesAsync();
     }
 
-    private void AddHolding(IOrder order)
+    private void AddHolding(BaseOrder order)
     {
         dbContext.Holdings.Add(new Holding
         {
@@ -49,7 +49,7 @@ public class PaperTradeCatchService(IPaperPortfolioService portfolioService, App
         });
     }
 
-    private void AddTrade(IOrder order)
+    private void AddTrade(BaseOrder order)
     {
         dbContext.Trades.Add(
             new Trade
