@@ -5,7 +5,10 @@ using Data.DTOs.CurrentPrice;
 using Data.DTOs.HistoricalPrice;
 using Infrastructure.Binance;
 using Integration.Tests.BrokerController.Stubs;
+using Integration.Tests.Utils;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -17,8 +20,12 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
     {
         _client = factory.WithWebHostBuilder(builder =>
         {
-            builder.ConfigureServices(services =>
+            builder.ConfigureTestServices(services =>
             {
+                services.AddAuthentication(defaultScheme: "TestScheme")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                        "TestScheme", options => { });
+                
                 services.AddHttpClient<IBinanceApi, BinanceApi>()
                     .ConfigurePrimaryHttpMessageHandler(sp =>
                     {
