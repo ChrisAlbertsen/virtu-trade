@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Binance.Spot" Version="4.1.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.11">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Environments\Local.json" />
+        <_ContentIncludedByDefault Remove="Environments\Local.json"/>
     </ItemGroup>
 
 </Project>
