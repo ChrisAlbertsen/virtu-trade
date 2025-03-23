@@ -12,6 +12,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("Application");
+        
         modelBuilder.Entity<Portfolio>()
             .Property(h => h.Id)
             .ValueGeneratedNever();
