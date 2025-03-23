@@ -6,6 +6,8 @@ namespace Data.Entities;
 public class Portfolio
 {
     public required Guid Id { get; set; }
+    
+    public required Guid UserId { get; set; }
     public required decimal Cash { get; set; }
     public required decimal ReservedCash { get; set; }
 

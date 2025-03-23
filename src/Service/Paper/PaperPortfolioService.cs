@@ -1,37 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Data.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Service.Exceptions.PortfolioExceptions;
 using Service.Interfaces;
-
 namespace Service.Paper;
 
-public class PaperPortfolioService(AppDbContext dbContext) : IPaperPortfolioService
+public class PaperPortfolioService(AppDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IPaperPortfolioService
 {
     public async Task<List<Holding>> GetHoldingsAsync(Guid portfolioId)
     {
-        return await dbContext
-            .Holdings
-            .Where(h => h.PortfolioId == portfolioId)
+        var userId = GetUserId();
+        return await dbContext.Holdings
+            .Where(h => h.PortfolioId == portfolioId && h.UserId == userId)
             .ToListAsync();
     }
 
     public async Task<Holding?> FindHoldingWithSymbol(Guid portfolioId, string symbol)
     {
+        var userId = GetUserId();
         return await dbContext
             .Holdings
-            .FirstOrDefaultAsync(h => h.Symbol == symbol && h.PortfolioId == portfolioId);
+            .FirstOrDefaultAsync(h => h.Symbol == symbol && h.PortfolioId == portfolioId && h.UserId == userId);
     }
 
     public async Task<Portfolio> CreatePortfolio()
     {
+        var userId = GetUserId();
+        var userAlreadyHasPortfolio = await dbContext
+            .Portfolios
+            .AnyAsync(p => p.UserId == userId);
+
+        if (userAlreadyHasPortfolio)
+        {
+            throw new NotImplementedException("Multiple portfolio per user has not been implemented yet.");
+        }
+        
         var portfolio = new Portfolio
         {
             Id = Guid.NewGuid(),
+            UserId =  GetUserId(),
             Cash = 0,
             ReservedCash = 0,
             Holdings = new List<Holding>()
@@ -80,17 +93,30 @@ public class PaperPortfolioService(AppDbContext dbContext) : IPaperPortfolioServ
 
     public async Task<Portfolio?> GetPortfolioAsync(Guid portfolioId)
     {
+        var userId = GetUserId();
+        
         return await dbContext
             .Portfolios
-            .FirstOrDefaultAsync(p => p.Id == portfolioId);
+            .FirstOrDefaultAsync(p => p.Id == portfolioId && p.UserId == userId);
     }
 
     public async Task<Portfolio?> GetPortfolioWithHoldingsAsync(Guid portfolioId)
     {
+        var userId = GetUserId();
         return await dbContext
             .Portfolios
             .Include(h => h.Holdings)
-            .FirstOrDefaultAsync(p => p.Id == portfolioId);
+            .FirstOrDefaultAsync(p => p.Id == portfolioId && p.UserId == userId);
+    }
+
+    public Guid GetUserId()
+    {
+        if (!Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                out var userId))
+        {
+            throw new UnauthorizedAccessException("User does not exist");
+        };
+        return userId;
     }
 
     private bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)

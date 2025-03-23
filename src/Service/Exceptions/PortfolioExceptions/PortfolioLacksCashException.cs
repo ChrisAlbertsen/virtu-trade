@@ -2,10 +2,4 @@
 
 namespace Service.Exceptions.PortfolioExceptions;
 
-public class PortfolioLacksCashException : Exception
-{
-    public PortfolioLacksCashException(Guid portfolioId)
-        : base("Portfolio lacks cash: " + portfolioId)
-    {
-    }
-}
+public class PortfolioLacksCashException(Guid portfolioId) : Exception($"Portfolio lacks cash: {portfolioId}");

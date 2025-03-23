@@ -58,6 +58,7 @@ builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationSche
     };
 });
 
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AuthDbContext>()

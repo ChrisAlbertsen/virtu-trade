@@ -2,10 +2,4 @@
 
 namespace Service.Exceptions.PortfolioExceptions;
 
-public class PortfolioNotFoundException : Exception
-{
-    public PortfolioNotFoundException(Guid portfolioId)
-        : base("Portfolio not found: " + portfolioId)
-    {
-    }
-}
+public class PortfolioNotFoundException(Guid portfolioId) : Exception($"Portfolio not found: {portfolioId}");
