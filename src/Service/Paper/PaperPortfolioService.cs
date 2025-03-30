@@ -11,48 +11,66 @@ using Service.Exceptions.PortfolioExceptions;
 using Service.Interfaces;
 namespace Service.Paper;
 
-public class PaperPortfolioService(AppDbContext dbContext, IHttpContextAccessor httpContextAccessor) : IPaperPortfolioService
+public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService authorizationService) : IPaperPortfolioService
 {
     public async Task<List<Holding>> GetHoldingsAsync(Guid portfolioId)
     {
-        var userId = GetUserId();
         return await dbContext.Holdings
-            .Where(h => h.PortfolioId == portfolioId && h.UserId == userId)
+            .Where(h => h.PortfolioId == portfolioId)
             .ToListAsync();
+    }
+
+    private async Task<int> DeletePortfolio(Guid portfolioId)
+    {
+        return await dbContext.Portfolios
+            .Where(p => p.Id == portfolioId)
+            .ExecuteDeleteAsync();
     }
 
     public async Task<Holding?> FindHoldingWithSymbol(Guid portfolioId, string symbol)
     {
-        var userId = GetUserId();
         return await dbContext
             .Holdings
-            .FirstOrDefaultAsync(h => h.Symbol == symbol && h.PortfolioId == portfolioId && h.UserId == userId);
+            .FirstOrDefaultAsync(h => h.Symbol == symbol && h.PortfolioId == portfolioId);
     }
 
     public async Task<Portfolio> CreatePortfolio()
     {
-        var userId = GetUserId();
-        var userAlreadyHasPortfolio = await dbContext
-            .Portfolios
-            .AnyAsync(p => p.UserId == userId);
-
-        if (userAlreadyHasPortfolio)
-        {
-            throw new NotImplementedException("Multiple portfolio per user has not been implemented yet.");
-        }
-        
+        var portfolioId = Guid.NewGuid();
         var portfolio = new Portfolio
         {
-            Id = Guid.NewGuid(),
-            UserId =  GetUserId(),
+            Id = portfolioId,
             Cash = 0,
             ReservedCash = 0,
             Holdings = new List<Holding>()
         };
-
         dbContext.Portfolios.Add(portfolio);
         await dbContext.EnsuredSaveChangesAsync();
-        return portfolio;
+
+        bool isAccessAddedToPortfolioUser;
+        try
+        {
+            isAccessAddedToPortfolioUser = await authorizationService.AddPortfolioToPortfolioUser(portfolioId);
+        } catch (Exception e)
+        {;
+            isAccessAddedToPortfolioUser = false;
+        }
+
+        if (isAccessAddedToPortfolioUser) return portfolio;
+        
+        dbContext.Portfolios.Remove(portfolio);
+    }
+
+    private async Task<bool> Portfolio(Guid portfolioId)
+    {
+        try
+        {
+            return await authorizationService.AddPortfolioToPortfolioUser(portfolioId);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     public async Task DepositMoneyToPortfolio(Guid portfolioId, decimal moneyToDeposit)
@@ -93,34 +111,24 @@ public class PaperPortfolioService(AppDbContext dbContext, IHttpContextAccessor 
 
     public async Task<Portfolio?> GetPortfolioAsync(Guid portfolioId)
     {
-        var userId = GetUserId();
-        
+        var userId = authorizationService.GetUserId();
         return await dbContext
             .Portfolios
-            .FirstOrDefaultAsync(p => p.Id == portfolioId && p.UserId == userId);
+            .FirstOrDefaultAsync(p => p.Id == portfolioId);
     }
 
     public async Task<Portfolio?> GetPortfolioWithHoldingsAsync(Guid portfolioId)
     {
-        var userId = GetUserId();
         return await dbContext
             .Portfolios
             .Include(h => h.Holdings)
-            .FirstOrDefaultAsync(p => p.Id == portfolioId && p.UserId == userId);
+            .FirstOrDefaultAsync(p => p.Id == portfolioId);
     }
-
-    public Guid GetUserId()
-    {
-        if (!Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value,
-                out var userId))
-        {
-            throw new UnauthorizedAccessException("User does not exist");
-        };
-        return userId;
-    }
+    
 
     private bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)
     {
         return portfolio.Cash >= neededCash;
     }
+    
 }

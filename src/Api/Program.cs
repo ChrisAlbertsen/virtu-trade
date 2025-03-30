@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Data.Entities;
 using Infrastructure.Binance;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -60,7 +61,7 @@ builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationSche
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddIdentityCore<User>()
+builder.Services.AddIdentityCore<PortfolioUser>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddApiEndpoints();
 
@@ -84,7 +85,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapIdentityApi<User>();
+app.MapIdentityApi<PortfolioUser>();
 
 app.Run();
 
