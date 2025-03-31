@@ -41,7 +41,6 @@ public class PaperTradeCatchService(IPaperPortfolioService portfolioService, App
         dbContext.Holdings.Add(new Holding
         {
             Id = Guid.NewGuid(),
-            UserId = portfolioService.GetUserId(),
             PortfolioId = order.PortfolioId,
             Symbol = order.Symbol,
             Quantity = order.Quantity,

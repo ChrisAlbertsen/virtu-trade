@@ -14,7 +14,7 @@ public class PortfolioAuthorizationService(
     UserManager<PortfolioUser> userManager, 
     ILogger<PortfolioAuthorizationService> logger) : IAuthorizationService
 {
-    private string GetClaimUserIdFromHttpContext()
+    public string GetClaimUserIdFromHttpContext()
     {
         var userId = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId is not null) return userId;
@@ -54,13 +54,13 @@ public class PortfolioAuthorizationService(
         return result.Succeeded;
     }
     
-    //TODO: create separate logging class inheriting from Logger to centralize logic
+    //TODO: Configure logging solution to make the below obsolete
     private void LogRequestDetails(string message, LogLevel logLevel = LogLevel.Error)
     {
         var request = httpContextAccessor.HttpContext?.Request;
         var ipAddress = httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
         var userAgent = request?.Headers["User-Agent"].ToString();
-        
+
         if (logLevel == LogLevel.Warning)
         {
             logger.LogWarning(
@@ -81,5 +81,6 @@ public class PortfolioAuthorizationService(
                 ipAddress,
                 userAgent);
         }
+    }
 
 }

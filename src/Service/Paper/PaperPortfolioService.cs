@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Data.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Service.Exceptions.PortfolioExceptions;
@@ -15,20 +13,15 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 {
     public async Task<List<Holding>> GetHoldingsAsync(Guid portfolioId)
     {
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         return await dbContext.Holdings
             .Where(h => h.PortfolioId == portfolioId)
             .ToListAsync();
     }
 
-    private async Task<int> DeletePortfolio(Guid portfolioId)
-    {
-        return await dbContext.Portfolios
-            .Where(p => p.Id == portfolioId)
-            .ExecuteDeleteAsync();
-    }
-
     public async Task<Holding?> FindHoldingWithSymbol(Guid portfolioId, string symbol)
     {
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId); 
         return await dbContext
             .Holdings
             .FirstOrDefaultAsync(h => h.Symbol == symbol && h.PortfolioId == portfolioId);
@@ -59,6 +52,9 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
         if (isAccessAddedToPortfolioUser) return portfolio;
         
         dbContext.Portfolios.Remove(portfolio);
+        await dbContext.EnsuredSaveChangesAsync();
+        
+        throw new PortfolioCreationFailedException(portfolioId);
     }
 
     private async Task<bool> Portfolio(Guid portfolioId)
@@ -111,7 +107,7 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task<Portfolio?> GetPortfolioAsync(Guid portfolioId)
     {
-        var userId = authorizationService.GetUserId();
+        var userId = authorizationService.GetClaimUserIdFromHttpContext();
         return await dbContext
             .Portfolios
             .FirstOrDefaultAsync(p => p.Id == portfolioId);
