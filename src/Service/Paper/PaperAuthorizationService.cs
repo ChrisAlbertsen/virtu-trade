@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Data.AuthModels;
 using Data.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -34,7 +35,7 @@ public class PaperAuthorizationService(
     
     private bool IsUserAllowedAccess(PortfolioUser user, Guid portfolioId)
     {
-        return user.PortfolioIds.Contains(portfolioId);
+        return user.PortfolioUserMappings.Contains(portfolioId);
     }
 
     public async Task VerifyUserHasAccessToPortfolio(Guid portfolioId)

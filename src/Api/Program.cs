@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Data.AuthModels;
 using Data.Entities;
 using Infrastructure.Binance;
 using Microsoft.AspNetCore.Authentication;

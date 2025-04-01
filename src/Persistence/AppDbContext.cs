@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Data.AuthModels;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -10,23 +11,74 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<Trade> Trades { get; set; }
     public DbSet<Portfolio> Portfolios { get; set; }
     public DbSet<Holding> Holdings { get; set; }
+    public DbSet<PortfolioUserMapping> PortfolioUserMappings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema("Application");
+
+        modelBuilder.Entity<Portfolio>(portfolio =>
+        {
+            portfolio
+                .Property(h => h.Id)
+                .ValueGeneratedNever();
+
+            portfolio
+                .HasKey(p => p.Id);
+        });
+
+
+        modelBuilder.Entity<Holding>(holding =>
+        {
+            holding
+                .Property(h => h.Id)
+                .ValueGeneratedNever();
+
+            holding
+                .HasKey(h => h.Id);
+
+            holding
+                .HasOne(h => h.Portfolio)
+                .WithMany(p => p.Holdings)
+                .HasForeignKey(h => h.PortfolioId);
+        });
+
+
+        modelBuilder.Entity<Trade>(trade =>
+        {
+            trade
+                .Property(h => h.Id)
+                .ValueGeneratedNever();
+
+            trade
+                .HasKey(t => t.Id);
+
+            trade
+                .HasOne(t => t.Portfolio)
+                .WithMany(p => p.Trades)
+                .HasForeignKey(t => t.PortfolioId);
+        });
+            
         
-        modelBuilder.Entity<Portfolio>()
-            .Property(h => h.Id)
-            .ValueGeneratedNever();
+        
+        //TODO: Cascade deletion? Whats the default behavior on deletion
+        modelBuilder.Entity<PortfolioUserMapping>(portfolioUserMapping =>
+        {
+            portfolioUserMapping
+                .HasOne(pum => pum.Portfolio)
+                .WithMany(pum => pum.PortfolioUserMappings)
+                .HasForeignKey(pum => pum.PortfolioId);
 
-        modelBuilder.Entity<Holding>()
-            .Property(h => h.Id)
-            .ValueGeneratedNever();
+            portfolioUserMapping
+                .HasOne(pum => pum.PortfolioUser)
+                .WithMany(pum => pum.PortfolioUserMappings)
+                .HasForeignKey(pum => pum.PortfolioUserId);
 
-        modelBuilder.Entity<Trade>()
-            .Property(h => h.Id)
-            .ValueGeneratedNever();
+            portfolioUserMapping
+                .HasNoKey();
+        });
+            
     }
 
     public async Task<int> EnsuredSaveChangesAsync(int expectedChanges = 1)
