@@ -9,11 +9,13 @@ using Service.Interfaces;
 
 namespace Service.Paper;
 
-public class PortfolioAuthorizationService(
+public class PaperAuthorizationService(
     IHttpContextAccessor httpContextAccessor, 
     UserManager<PortfolioUser> userManager, 
-    ILogger<PortfolioAuthorizationService> logger) : IAuthorizationService
+    ILogger<PaperAuthorizationService> logger) : IAuthorizationService
 {
+    private bool _userIsAuthorized;
+    
     public string GetClaimUserIdFromHttpContext()
     {
         var userId = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -30,7 +32,6 @@ public class PortfolioAuthorizationService(
         throw new UnauthorizedAccessException("User does not exist");
     }
     
-    
     private bool IsUserAllowedAccess(PortfolioUser user, Guid portfolioId)
     {
         return user.PortfolioIds.Contains(portfolioId);
@@ -38,9 +39,17 @@ public class PortfolioAuthorizationService(
 
     public async Task VerifyUserHasAccessToPortfolio(Guid portfolioId)
     {
+        if(_userIsAuthorized) return;
+        
         var userId = GetClaimUserIdFromHttpContext();
         var user = await GetUserByUserId(userId);
-        if (IsUserAllowedAccess(user, portfolioId)) return;
+        
+        if (IsUserAllowedAccess(user, portfolioId))
+        {
+            _userIsAuthorized = true;
+            return;
+        }
+        
         LogRequestDetails($"User: {userId} is not allowed access to portfolio:{portfolioId}", LogLevel.Warning);
         throw new UnauthorizedAccessException($"User does not have access to portfolio {portfolioId}");
     }

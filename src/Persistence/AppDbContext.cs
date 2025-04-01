@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<PortfolioUser>(options)
 {
     public DbSet<Trade> Trades { get; set; }
     public DbSet<Portfolio> Portfolios { get; set; }
@@ -12,6 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema("Application");
         
         modelBuilder.Entity<Portfolio>()

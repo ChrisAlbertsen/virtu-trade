@@ -40,37 +40,31 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
         dbContext.Portfolios.Add(portfolio);
         await dbContext.EnsuredSaveChangesAsync();
 
+        if (await GiveUserAccessToPortfolio(portfolio.Id)) return portfolio;
+        
+        dbContext.Portfolios.Remove(portfolio);
+        await dbContext.EnsuredSaveChangesAsync();
+        throw new PortfolioCreationFailedException(portfolioId);
+    }
+
+    private async Task<bool> GiveUserAccessToPortfolio(Guid portfolioId)
+    {
         bool isAccessAddedToPortfolioUser;
         try
         {
             isAccessAddedToPortfolioUser = await authorizationService.AddPortfolioToPortfolioUser(portfolioId);
-        } catch (Exception e)
+        } 
+        catch (Exception e)
         {;
             isAccessAddedToPortfolioUser = false;
         }
 
-        if (isAccessAddedToPortfolioUser) return portfolio;
-        
-        dbContext.Portfolios.Remove(portfolio);
-        await dbContext.EnsuredSaveChangesAsync();
-        
-        throw new PortfolioCreationFailedException(portfolioId);
-    }
-
-    private async Task<bool> Portfolio(Guid portfolioId)
-    {
-        try
-        {
-            return await authorizationService.AddPortfolioToPortfolioUser(portfolioId);
-        }
-        catch
-        {
-            return false;
-        }
+        return isAccessAddedToPortfolioUser;
     }
 
     public async Task DepositMoneyToPortfolio(Guid portfolioId, decimal moneyToDeposit)
     {
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.Cash += moneyToDeposit;
@@ -79,6 +73,7 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task CheckAndReserveCashAmountAsync(Guid portfolioId, decimal cashToReserve)
     {
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         if (!PortfolioHasSufficientCash(portfolio, cashToReserve)) throw new PortfolioLacksCashException(portfolioId);
@@ -90,6 +85,7 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task PayReservedCash(Guid portfolioId, decimal cashToPay)
     {
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.ReservedCash -= cashToPay;
@@ -98,6 +94,7 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task UnreserveCash(Guid portfolioId, decimal cashToUnreserve)
     {
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.ReservedCash -= cashToUnreserve;
@@ -107,7 +104,7 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task<Portfolio?> GetPortfolioAsync(Guid portfolioId)
     {
-        var userId = authorizationService.GetClaimUserIdFromHttpContext();
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         return await dbContext
             .Portfolios
             .FirstOrDefaultAsync(p => p.Id == portfolioId);
@@ -115,6 +112,7 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task<Portfolio?> GetPortfolioWithHoldingsAsync(Guid portfolioId)
     {
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         return await dbContext
             .Portfolios
             .Include(h => h.Holdings)

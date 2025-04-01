@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Data.Entities;
 using Infrastructure.Binance;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Persistence;
-using Persistence.Auth;
 using Service.Binance;
 using Service.Interfaces;
 using Service.Paper;
@@ -25,9 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpLogging(o => { });
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
-builder.Services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
-
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -36,6 +34,7 @@ builder.Services.AddScoped<IBrokerOrderService, PaperOrderService>();
 builder.Services.AddScoped<IPaperPortfolioService, PaperPortfolioService>();
 builder.Services.AddScoped<IPaperTradeCatchService, PaperTradeCatchService>();
 builder.Services.AddScoped<IBinanceApi, BinanceApi>();
+builder.Services.AddScoped<IAuthorizationService, PaperAuthorizationService>();
 builder.Services.AddScoped<HttpClient>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -62,7 +61,7 @@ builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationSche
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddIdentityCore<PortfolioUser>()
-    .AddEntityFrameworkStores<AuthDbContext>()
+    .AddEntityFrameworkStores<AppDbContext>()
     .AddApiEndpoints();
 
 
