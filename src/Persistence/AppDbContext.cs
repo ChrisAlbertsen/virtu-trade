@@ -59,26 +59,27 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                 .WithMany(p => p.Trades)
                 .HasForeignKey(t => t.PortfolioId);
         });
-            
-        
-        
+
+
         //TODO: Cascade deletion? Whats the default behavior on deletion
         modelBuilder.Entity<PortfolioUserMapping>(portfolioUserMapping =>
         {
             portfolioUserMapping
+                .Property(pum => pum.Id)
+                .ValueGeneratedNever();
+            
+            portfolioUserMapping
                 .HasOne(pum => pum.Portfolio)
-                .WithMany(pum => pum.PortfolioUserMappings)
                 .HasForeignKey(pum => pum.PortfolioId);
 
             portfolioUserMapping
                 .HasOne(pum => pum.PortfolioUser)
-                .WithMany(pum => pum.PortfolioUserMappings)
+                .WithMany(user => user.PortfolioUserMappings)
                 .HasForeignKey(pum => pum.PortfolioUserId);
 
             portfolioUserMapping
-                .HasNoKey();
+                .HasKey(pum => pum.Id);
         });
-            
     }
 
     public async Task<int> EnsuredSaveChangesAsync(int expectedChanges = 1)

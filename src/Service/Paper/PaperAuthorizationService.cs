@@ -1,69 +1,75 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Data.AuthModels;
-using Data.Entities;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Persistence;
 using Service.Interfaces;
 
 namespace Service.Paper;
 
 public class PaperAuthorizationService(
-    IHttpContextAccessor httpContextAccessor, 
-    UserManager<PortfolioUser> userManager, 
+    IHttpContextAccessor httpContextAccessor,
+    AppDbContext dbContext,
     ILogger<PaperAuthorizationService> logger) : IAuthorizationService
 {
     private bool _userIsAuthorized;
-    
+
     public string GetClaimUserIdFromHttpContext()
     {
         var userId = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId is not null) return userId;
+        
         LogRequestDetails("No userId found in claim");
         throw new UnauthorizedAccessException("No UserId found in claim");
     }
 
-    private async Task<PortfolioUser> GetUserByUserId(string userId)
-    {
-        var user = await userManager.FindByIdAsync(userId);
-        if (user is not null) return user;
-        LogRequestDetails($"No user exists with id: {userId}");
-        throw new UnauthorizedAccessException("User does not exist");
-    }
-    
-    private bool IsUserAllowedAccess(PortfolioUser user, Guid portfolioId)
-    {
-        return user.PortfolioUserMappings.Contains(portfolioId);
-    }
-
     public async Task VerifyUserHasAccessToPortfolio(Guid portfolioId)
     {
-        if(_userIsAuthorized) return;
-        
+        if (_userIsAuthorized) return;
+
         var userId = GetClaimUserIdFromHttpContext();
-        var user = await GetUserByUserId(userId);
-        
-        if (IsUserAllowedAccess(user, portfolioId))
+        var portfolioUserMapping = await GetPortfolioUserMappings(userId);
+
+        if (IsUserAllowedAccess(portfolioUserMapping, portfolioId))
         {
             _userIsAuthorized = true;
             return;
         }
-        
+
         LogRequestDetails($"User: {userId} is not allowed access to portfolio:{portfolioId}", LogLevel.Warning);
         throw new UnauthorizedAccessException($"User does not have access to portfolio {portfolioId}");
     }
 
-    public async Task<bool> AddPortfolioToPortfolioUser(Guid portfolioId)
+    private async Task<ICollection<PortfolioUserMapping>> GetPortfolioUserMappings(string userId)
     {
-        var userId = GetClaimUserIdFromHttpContext();
-        var user = await GetUserByUserId(userId);
-        user.PortfolioIds.Add(portfolioId);
-        var result = await userManager.UpdateAsync(user);
-        return result.Succeeded;
+        var portfolioUserMappings = await dbContext
+            .PortfolioUserMappings
+            .Where(pum => pum.PortfolioUserId == userId)
+            .ToListAsync();
+
+        if (portfolioUserMappings.Count > 0) return portfolioUserMappings;
+        LogRequestDetails($"No user exists with id: {userId}");
+        throw new UnauthorizedAccessException("User has no portfolio accesses");
     }
-    
+
+    private static bool IsUserAllowedAccess(ICollection<PortfolioUserMapping> portfolioUserMappings, Guid portfolioId)
+    {
+        return portfolioUserMappings.Any(p => p.PortfolioId == portfolioId);
+    }
+
+    public void GiveUserAccessToPortfolio(Guid portfolioId)
+    {
+        var portfolioUserMapping = new PortfolioUserMapping
+            {Id = Guid.NewGuid(), PortfolioId = portfolioId, PortfolioUserId = GetClaimUserIdFromHttpContext() };
+        dbContext.PortfolioUserMappings.Add(portfolioUserMapping);
+    }
+
+
     //TODO: Configure logging solution to make the below obsolete
     private void LogRequestDetails(string message, LogLevel logLevel = LogLevel.Error)
     {
@@ -72,7 +78,6 @@ public class PaperAuthorizationService(
         var userAgent = request?.Headers["User-Agent"].ToString();
 
         if (logLevel == LogLevel.Warning)
-        {
             logger.LogWarning(
                 "{Message}. Request Information: Path: {RequestPath}, Method: {RequestMethod}, IP Address: {IpAddress}, User-Agent: {UserAgent}",
                 message,
@@ -80,9 +85,7 @@ public class PaperAuthorizationService(
                 request?.Method,
                 ipAddress,
                 userAgent);
-        }
         else
-        {
             logger.LogError(
                 "{Message}. Request Information: Path: {RequestPath}, Method: {RequestMethod}, IP Address: {IpAddress}, User-Agent: {UserAgent}",
                 message,
@@ -90,7 +93,5 @@ public class PaperAuthorizationService(
                 request?.Method,
                 ipAddress,
                 userAgent);
-        }
     }
-
 }

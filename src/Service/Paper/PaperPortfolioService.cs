@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Service.Exceptions.PortfolioExceptions;
 using Service.Interfaces;
+
 namespace Service.Paper;
 
-public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService authorizationService) : IPaperPortfolioService
+public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService authorizationService)
+    : IPaperPortfolioService
 {
     public async Task<List<Holding>> GetHoldingsAsync(Guid portfolioId)
     {
@@ -21,7 +23,7 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task<Holding?> FindHoldingWithSymbol(Guid portfolioId, string symbol)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId); 
+        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         return await dbContext
             .Holdings
             .FirstOrDefaultAsync(h => h.Symbol == symbol && h.PortfolioId == portfolioId);
@@ -38,28 +40,16 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
             Holdings = new List<Holding>()
         };
         dbContext.Portfolios.Add(portfolio);
-        await dbContext.EnsuredSaveChangesAsync();
-
-        if (await GiveUserAccessToPortfolio(portfolio.Id)) return portfolio;
-        
-        dbContext.Portfolios.Remove(portfolio);
-        await dbContext.EnsuredSaveChangesAsync();
-        throw new PortfolioCreationFailedException(portfolioId);
-    }
-
-    private async Task<bool> GiveUserAccessToPortfolio(Guid portfolioId)
-    {
-        bool isAccessAddedToPortfolioUser;
+        authorizationService.GiveUserAccessToPortfolio(portfolio.Id);
         try
         {
-            isAccessAddedToPortfolioUser = await authorizationService.AddPortfolioToPortfolioUser(portfolioId);
-        } 
-        catch (Exception e)
-        {;
-            isAccessAddedToPortfolioUser = false;
+            await dbContext.EnsuredSaveChangesAsync(2);
+            return portfolio;
         }
-
-        return isAccessAddedToPortfolioUser;
+        catch (Exception e)
+        {
+            throw new PortfolioCreationFailedException(portfolioId);
+        }
     }
 
     public async Task DepositMoneyToPortfolio(Guid portfolioId, decimal moneyToDeposit)
@@ -118,11 +108,9 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
             .Include(h => h.Holdings)
             .FirstOrDefaultAsync(p => p.Id == portfolioId);
     }
-    
 
-    private bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)
+    private static bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)
     {
         return portfolio.Cash >= neededCash;
     }
-    
 }

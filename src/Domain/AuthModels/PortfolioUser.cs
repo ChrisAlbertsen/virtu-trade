@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Data.Entities;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace Data.AuthModels;

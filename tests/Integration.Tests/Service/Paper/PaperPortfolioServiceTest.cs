@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using Microsoft.AspNetCore.Http;
 using Moq;
 using Persistence;
 using Service.Interfaces;
@@ -11,7 +10,7 @@ namespace Integration.Tests.Service.Paper;
 public class PaperPortfolioServiceTest
 {
     private readonly PaperPortfolioService _paperPortfolioService;
-    
+
     public PaperPortfolioServiceTest()
     {
         Mock<AppDbContext> dbContext = new();
