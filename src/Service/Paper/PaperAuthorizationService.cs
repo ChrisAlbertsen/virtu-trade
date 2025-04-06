@@ -65,7 +65,7 @@ public class PaperAuthorizationService(
     public void GiveUserAccessToPortfolio(Guid portfolioId)
     {
         var portfolioUserMapping = new UserPortfolioAccess
-            {Id = Guid.NewGuid(), PortfolioId = portfolioId, UserId = GetClaimUserIdFromHttpContext() };
+            {PortfolioId = portfolioId, UserId = GetClaimUserIdFromHttpContext() };
         dbContext.UserPortfolioAccess.Add(portfolioUserMapping);
     }
 

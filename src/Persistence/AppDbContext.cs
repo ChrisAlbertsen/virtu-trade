@@ -65,16 +65,12 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         modelBuilder.Entity<UserPortfolioAccess>(userPortfolioAccess =>
         {
             userPortfolioAccess
-                .Property(upa => upa.Id)
-                .ValueGeneratedNever();
-            
-            userPortfolioAccess
-                .HasOne(upa => upa.Portfolio)
-                .WithMany(p => p.UserPortfolioAccesses)
+                .HasOne<Portfolio>()
+                .WithMany()
                 .HasForeignKey(upa => upa.PortfolioId);
 
             userPortfolioAccess
-                .HasOne(upa => upa.User)
+                .HasOne<User>()
                 .WithMany(user => user.UserPortfolioAccesses)
                 .HasForeignKey(upa => upa.UserId);
 
