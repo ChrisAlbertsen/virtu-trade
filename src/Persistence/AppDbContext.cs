@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<PortfolioUser>(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<User>(options)
 {
     public DbSet<Trade> Trades { get; set; }
     public DbSet<Portfolio> Portfolios { get; set; }
     public DbSet<Holding> Holdings { get; set; }
-    public DbSet<PortfolioUserMapping> PortfolioUserMappings { get; set; }
+    public DbSet<UserPortfolioAccess> UserPortfolioAccess { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -62,23 +62,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
 
 
         //TODO: Cascade deletion? Whats the default behavior on deletion
-        modelBuilder.Entity<PortfolioUserMapping>(portfolioUserMapping =>
+        modelBuilder.Entity<UserPortfolioAccess>(userPortfolioAccess =>
         {
-            portfolioUserMapping
-                .Property(pum => pum.Id)
+            userPortfolioAccess
+                .Property(upa => upa.Id)
                 .ValueGeneratedNever();
             
-            portfolioUserMapping
-                .HasOne(pum => pum.Portfolio)
-                .HasForeignKey(pum => pum.PortfolioId);
+            userPortfolioAccess
+                .HasOne(upa => upa.Portfolio)
+                .WithMany(p => p.UserPortfolioAccesses)
+                .HasForeignKey(upa => upa.PortfolioId);
 
-            portfolioUserMapping
-                .HasOne(pum => pum.PortfolioUser)
-                .WithMany(user => user.PortfolioUserMappings)
-                .HasForeignKey(pum => pum.PortfolioUserId);
+            userPortfolioAccess
+                .HasOne(upa => upa.User)
+                .WithMany(user => user.UserPortfolioAccesses)
+                .HasForeignKey(upa => upa.UserId);
 
-            portfolioUserMapping
-                .HasKey(pum => pum.Id);
+            userPortfolioAccess
+                .HasKey(upa => new {upa.PortfolioId, upa.UserId});
         });
     }
 

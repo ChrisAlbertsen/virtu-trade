@@ -59,7 +59,7 @@ builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationSche
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddIdentityCore<PortfolioUser>()
+builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddApiEndpoints();
 
@@ -83,7 +83,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapIdentityApi<PortfolioUser>();
+app.MapIdentityApi<User>();
 
 app.Run();
 

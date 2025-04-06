@@ -45,28 +45,28 @@ public class PaperAuthorizationService(
         throw new UnauthorizedAccessException($"User does not have access to portfolio {portfolioId}");
     }
 
-    private async Task<ICollection<PortfolioUserMapping>> GetPortfolioUserMappings(string userId)
+    private async Task<ICollection<UserPortfolioAccess>> GetPortfolioUserMappings(string userId)
     {
-        var portfolioUserMappings = await dbContext
-            .PortfolioUserMappings
-            .Where(pum => pum.PortfolioUserId == userId)
+        var userPortfolioAccesses = await dbContext
+            .UserPortfolioAccess
+            .Where(upa => upa.UserId == userId)
             .ToListAsync();
 
-        if (portfolioUserMappings.Count > 0) return portfolioUserMappings;
+        if (userPortfolioAccesses.Count > 0) return userPortfolioAccesses;
         LogRequestDetails($"No user exists with id: {userId}");
         throw new UnauthorizedAccessException("User has no portfolio accesses");
     }
 
-    private static bool IsUserAllowedAccess(ICollection<PortfolioUserMapping> portfolioUserMappings, Guid portfolioId)
+    private static bool IsUserAllowedAccess(ICollection<UserPortfolioAccess> portfolioUserMappings, Guid portfolioId)
     {
         return portfolioUserMappings.Any(p => p.PortfolioId == portfolioId);
     }
 
     public void GiveUserAccessToPortfolio(Guid portfolioId)
     {
-        var portfolioUserMapping = new PortfolioUserMapping
-            {Id = Guid.NewGuid(), PortfolioId = portfolioId, PortfolioUserId = GetClaimUserIdFromHttpContext() };
-        dbContext.PortfolioUserMappings.Add(portfolioUserMapping);
+        var portfolioUserMapping = new UserPortfolioAccess
+            {Id = Guid.NewGuid(), PortfolioId = portfolioId, UserId = GetClaimUserIdFromHttpContext() };
+        dbContext.UserPortfolioAccess.Add(portfolioUserMapping);
     }
 
 

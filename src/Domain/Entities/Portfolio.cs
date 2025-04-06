@@ -11,8 +11,7 @@ public class Portfolio
     public required decimal Cash { get; set; }
     public required decimal ReservedCash { get; set; }
     public ICollection<Holding> Holdings { get; init; }
-    public ICollection<Trade>? Trades { get; init; }
+    public ICollection<Trade> Trades { get; init; } = null!;
     
-    [JsonIgnore]
-    public ICollection<PortfolioUserMapping> PortfolioUserMappings { get; init; }
+    public ICollection<UserPortfolioAccess> UserPortfolioAccesses { get; init; } = null!;
 }
