@@ -34,7 +34,8 @@ public class BrokerController(
     [HttpPost("orders/execute-market-order")]
     public async Task<IActionResult> ExecuteMarketOrder(MarketOrderParams marketOrderParams)
     {
-        var result = await authorizationService.AuthorizeAsync(User, marketOrderParams.PortfolioId, "canAccessPortfolio");
+        var result =
+            await authorizationService.AuthorizeAsync(User, marketOrderParams.PortfolioId, "canAccessPortfolio");
         if (!result.Succeeded) return Forbid();
         var orderFulfillmentResponse = await brokerOrderService.ExecuteMarketOrder(marketOrderParams);
         return Ok(orderFulfillmentResponse);

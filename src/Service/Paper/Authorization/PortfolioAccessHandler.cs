@@ -33,12 +33,8 @@ public class PortfolioAccessHandler(
             .AnyAsync(upa => upa.UserId == userId && upa.PortfolioId == portfolioId);
 
         if (hasAccess)
-        {
             context.Succeed(requirement);
-        }
         else
-        {
             logger.LogWarning("User {UserId} denied access to portfolio {PortfolioId}", userId, portfolioId);
-        }
     }
 }

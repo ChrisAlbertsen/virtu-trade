@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Data.AuthModels;
-using Newtonsoft.Json;
 
 namespace Data.Entities;
 

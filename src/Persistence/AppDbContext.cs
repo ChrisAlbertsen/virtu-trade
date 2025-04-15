@@ -75,7 +75,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                 .HasForeignKey(upa => upa.UserId);
 
             userPortfolioAccess
-                .HasKey(upa => new {upa.PortfolioId, upa.UserId});
+                .HasKey(upa => new { upa.PortfolioId, upa.UserId });
         });
     }
 
