@@ -36,12 +36,12 @@ builder.Services.AddScoped<IPortfolioService, PaperPortfolioService>();
 builder.Services.AddScoped<ITradeCatchService, PaperTradeCatchService>();
 builder.Services.AddScoped<IBinanceApi, BinanceApi>();
 builder.Services.AddScoped<HttpClient>();
+builder.Services.AddScoped<IAuthorizationHandler, PortfolioAccessHandler>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IAuthorizationHandler, PortfolioAccessHandler>();
 builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme, options =>
 {
     options.Events.OnRedirectToLogin = context =>

@@ -59,9 +59,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                 .WithMany(p => p.Trades)
                 .HasForeignKey(t => t.PortfolioId);
         });
-
-
-        //TODO: Cascade deletion? Whats the default behavior on deletion
+        
         modelBuilder.Entity<UserPortfolioAccess>(userPortfolioAccess =>
         {
             userPortfolioAccess
