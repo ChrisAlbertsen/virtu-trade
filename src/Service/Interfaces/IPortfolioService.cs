@@ -5,7 +5,7 @@ using Data.Entities;
 
 namespace Service.Interfaces;
 
-public interface IPaperPortfolioService
+public interface IPortfolioService
 {
     Task<Portfolio> CreatePortfolio();
     Task DepositMoneyToPortfolio(Guid portfolioId, decimal moneyToDeposit);

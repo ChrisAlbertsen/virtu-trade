@@ -17,7 +17,6 @@ using Service.Binance;
 using Service.Interfaces;
 using Service.Paper;
 using Service.Paper.Authorization;
-using IAuthorizationService = Service.Interfaces.IAuthorizationService;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
@@ -33,10 +32,9 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connect
 builder.Services.AddControllers();
 builder.Services.AddScoped<IBrokerDataService, BinanceBrokerDataService>();
 builder.Services.AddScoped<IBrokerOrderService, PaperOrderService>();
-builder.Services.AddScoped<IPaperPortfolioService, PaperPortfolioService>();
-builder.Services.AddScoped<IPaperTradeCatchService, PaperTradeCatchService>();
+builder.Services.AddScoped<IPortfolioService, PaperPortfolioService>();
+builder.Services.AddScoped<ITradeCatchService, PaperTradeCatchService>();
 builder.Services.AddScoped<IBinanceApi, BinanceApi>();
-builder.Services.AddScoped<IAuthorizationService, PaperAuthorizationService>();
 builder.Services.AddScoped<HttpClient>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

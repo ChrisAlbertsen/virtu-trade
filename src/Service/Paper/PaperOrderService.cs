@@ -8,8 +8,8 @@ using Service.Interfaces;
 namespace Service.Paper;
 
 public class PaperOrderService(
-    IPaperPortfolioService paperPortfolioService,
-    IPaperTradeCatchService paperTradeCatchService,
+    IPortfolioService portfolioService,
+    ITradeCatchService tradeCatchService,
     IBrokerDataService brokerDataService,
     ILogger<PaperOrderService> logger)
     : IBrokerOrderService
@@ -34,11 +34,11 @@ public class PaperOrderService(
 
     private async Task<OrderFulfillmentResponse> ResolveOrder(BaseOrder order)
     {
-        await paperPortfolioService.CheckAndReserveCashAmountAsync(order.PortfolioId, order.Price);
+        await portfolioService.CheckAndReserveCashAmountAsync(order.PortfolioId, order.Price);
 
         try
         {
-            await paperTradeCatchService.CatchTrade(order);
+            await tradeCatchService.CatchTrade(order);
         }
         catch (Exception e)
         {
@@ -47,11 +47,11 @@ public class PaperOrderService(
                 order.PortfolioId,
                 order.Symbol,
                 e.Message);
-            await paperPortfolioService.UnreserveCash(order.PortfolioId, order.OrderValue);
+            await portfolioService.UnreserveCash(order.PortfolioId, order.OrderValue);
             throw;
         }
 
-        await paperPortfolioService.PayReservedCash(order.PortfolioId, order.OrderValue);
+        await portfolioService.PayReservedCash(order.PortfolioId, order.OrderValue);
 
         return new OrderFulfillmentResponse
         {

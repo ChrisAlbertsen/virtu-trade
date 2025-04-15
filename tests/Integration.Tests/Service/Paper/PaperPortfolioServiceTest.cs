@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using Persistence;
-using Service.Interfaces;
 using Service.Paper;
 
 namespace Integration.Tests.Service.Paper;
@@ -14,8 +14,8 @@ public class PaperPortfolioServiceTest
     public PaperPortfolioServiceTest()
     {
         Mock<AppDbContext> dbContext = new();
-        Mock<IAuthorizationService> authorizationService = new();
-        _paperPortfolioService = new PaperPortfolioService(dbContext.Object, authorizationService.Object);
+        Mock<IHttpContextAccessor> httpContextAccessor = new();
+        _paperPortfolioService = new PaperPortfolioService(dbContext.Object, httpContextAccessor.Object);
     }
 
     //TODO: write tests for methods when TestContainer is implemented

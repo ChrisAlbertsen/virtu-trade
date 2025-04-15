@@ -10,12 +10,13 @@ namespace Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class PaperController(IPaperPortfolioService paperPortfolioService, IAuthorizationService authorizationService) : ControllerBase
+public class PaperController(IPortfolioService portfolioService, IAuthorizationService authorizationService)
+    : ControllerBase
 {
     [HttpPost("create-portfolio")]
     public async Task<IActionResult> CreatePortfolio()
     {
-        var portfolio = await paperPortfolioService.CreatePortfolio();
+        var portfolio = await portfolioService.CreatePortfolio();
         return Ok(portfolio);
     }
 
@@ -24,7 +25,7 @@ public class PaperController(IPaperPortfolioService paperPortfolioService, IAuth
     {
         var result = await authorizationService.AuthorizeAsync(User, portfolioId, "canAccessPortfolio");
         if (!result.Succeeded) return Forbid();
-        await paperPortfolioService.DepositMoneyToPortfolio(portfolioId, moneyToDeposit);
+        await portfolioService.DepositMoneyToPortfolio(portfolioId, moneyToDeposit);
         return Ok();
     }
 
@@ -33,7 +34,7 @@ public class PaperController(IPaperPortfolioService paperPortfolioService, IAuth
     {
         var result = await authorizationService.AuthorizeAsync(User, portfolioId, "canAccessPortfolio");
         if (!result.Succeeded) return Forbid();
-        var portfolio = await paperPortfolioService.GetPortfolioWithHoldingsAsync(portfolioId);
+        var portfolio = await portfolioService.GetPortfolioWithHoldingsAsync(portfolioId);
         return Ok(portfolio);
     }
 }
