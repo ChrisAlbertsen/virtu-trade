@@ -7,14 +7,12 @@ using Microsoft.Extensions.Options;
 
 namespace Integration.Tests.Utils;
 
-public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+public class TestAuthHandler(
+    IOptionsMonitor<AuthenticationSchemeOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder)
+    : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
-    public TestAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
-        ILoggerFactory logger, UrlEncoder encoder)
-        : base(options, logger, encoder)
-    {
-    }
-
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var claims = new[] { new Claim(ClaimTypes.Name, "Test user") };
