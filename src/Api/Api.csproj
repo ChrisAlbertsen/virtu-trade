@@ -32,4 +32,8 @@
         <_ContentIncludedByDefault Remove="Environments\Local.json"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Authorization\" />
+    </ItemGroup>
+
 </Project>

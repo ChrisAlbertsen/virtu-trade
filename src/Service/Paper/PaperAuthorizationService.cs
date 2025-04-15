@@ -17,49 +17,13 @@ public class PaperAuthorizationService(
     AppDbContext dbContext,
     ILogger<PaperAuthorizationService> logger) : IAuthorizationService
 {
-    private bool _userIsAuthorized;
-
-    public string GetClaimUserIdFromHttpContext()
+    private string GetClaimUserIdFromHttpContext()
     {
         var userId = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (userId is not null) return userId;
         
         LogRequestDetails("No userId found in claim");
         throw new UnauthorizedAccessException("No UserId found in claim");
-    }
-
-    public async Task VerifyUserHasAccessToPortfolio(Guid portfolioId)
-    {
-        if (_userIsAuthorized) return;
-
-        var userId = GetClaimUserIdFromHttpContext();
-        var portfolioUserMapping = await GetPortfolioUserMappings(userId);
-
-        if (IsUserAllowedAccess(portfolioUserMapping, portfolioId))
-        {
-            _userIsAuthorized = true;
-            return;
-        }
-
-        LogRequestDetails($"User: {userId} is not allowed access to portfolio:{portfolioId}", LogLevel.Warning);
-        throw new UnauthorizedAccessException($"User does not have access to portfolio {portfolioId}");
-    }
-
-    private async Task<ICollection<UserPortfolioAccess>> GetPortfolioUserMappings(string userId)
-    {
-        var userPortfolioAccesses = await dbContext
-            .UserPortfolioAccess
-            .Where(upa => upa.UserId == userId)
-            .ToListAsync();
-
-        if (userPortfolioAccesses.Count > 0) return userPortfolioAccesses;
-        LogRequestDetails($"No user exists with id: {userId}");
-        throw new UnauthorizedAccessException("User has no portfolio accesses");
-    }
-
-    private static bool IsUserAllowedAccess(ICollection<UserPortfolioAccess> portfolioUserMappings, Guid portfolioId)
-    {
-        return portfolioUserMappings.Any(p => p.PortfolioId == portfolioId);
     }
 
     public void GiveUserAccessToPortfolio(Guid portfolioId)

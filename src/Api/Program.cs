@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Data.AuthModels;
 using Infrastructure.Binance;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,8 @@ using Persistence;
 using Service.Binance;
 using Service.Interfaces;
 using Service.Paper;
+using Service.Paper.Authorization;
+using IAuthorizationService = Service.Interfaces.IAuthorizationService;
 
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
@@ -40,8 +43,7 @@ builder.Services.AddScoped<HttpClient>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
-builder.Services.AddAuthorization();
+builder.Services.AddScoped<IAuthorizationHandler, PortfolioAccessHandler>();
 builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme, options =>
 {
     options.Events.OnRedirectToLogin = context =>
@@ -55,6 +57,12 @@ builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationSche
         context.Response.StatusCode = StatusCodes.Status403Forbidden;
         return Task.CompletedTask;
     };
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanAccessPortfolio", policy =>
+        policy.Requirements.Add(new PortfolioAccessRequirement()));
 });
 
 builder.Services.AddHttpContextAccessor();

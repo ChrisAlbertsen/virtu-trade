@@ -15,7 +15,6 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 {
     public async Task<List<Holding>> GetHoldingsAsync(Guid portfolioId)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         return await dbContext.Holdings
             .Where(h => h.PortfolioId == portfolioId)
             .ToListAsync();
@@ -23,7 +22,6 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task<Holding?> FindHoldingWithSymbol(Guid portfolioId, string symbol)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         return await dbContext
             .Holdings
             .FirstOrDefaultAsync(h => h.Symbol == symbol && h.PortfolioId == portfolioId);
@@ -54,7 +52,6 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task DepositMoneyToPortfolio(Guid portfolioId, decimal moneyToDeposit)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.Cash += moneyToDeposit;
@@ -63,7 +60,6 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task CheckAndReserveCashAmountAsync(Guid portfolioId, decimal cashToReserve)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         if (!PortfolioHasSufficientCash(portfolio, cashToReserve)) throw new PortfolioLacksCashException(portfolioId);
@@ -75,7 +71,6 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task PayReservedCash(Guid portfolioId, decimal cashToPay)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.ReservedCash -= cashToPay;
@@ -84,7 +79,6 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task UnreserveCash(Guid portfolioId, decimal cashToUnreserve)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         var portfolio = await GetPortfolioAsync(portfolioId);
         if (portfolio is null) throw new PortfolioNotFoundException(portfolioId);
         portfolio.ReservedCash -= cashToUnreserve;
@@ -94,7 +88,6 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task<Portfolio?> GetPortfolioAsync(Guid portfolioId)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         return await dbContext
             .Portfolios
             .FirstOrDefaultAsync(p => p.Id == portfolioId);
@@ -102,7 +95,6 @@ public class PaperPortfolioService(AppDbContext dbContext, IAuthorizationService
 
     public async Task<Portfolio?> GetPortfolioWithHoldingsAsync(Guid portfolioId)
     {
-        await authorizationService.VerifyUserHasAccessToPortfolio(portfolioId);
         return await dbContext
             .Portfolios
             .Include(h => h.Holdings)
