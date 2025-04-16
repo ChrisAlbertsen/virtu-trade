@@ -5,7 +5,8 @@ using Data.DTOs.CurrentPrice;
 using Data.DTOs.HistoricalPrice;
 using Infrastructure.Binance;
 using Integration.Tests.BrokerController.Stubs;
-using Integration.Tests.Utils;
+using Integration.Tests.TestData;
+using Integration.Tests.TestData.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -18,22 +19,22 @@ public class BrokerControllerIntegrationTests : IClassFixture<WebApplicationFact
 
     public BrokerControllerIntegrationTests(WebApplicationFactory<Program> factory)
     {
-        _client = factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureTestServices(services =>
+            _client = factory.WithWebHostBuilder(builder =>
             {
-                services.AddAuthentication("TestScheme")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                        "TestScheme", options => { });
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddAuthentication("TestScheme")
+                        .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                            "TestScheme", options => { });
 
-                services.AddHttpClient<IBinanceApi, BinanceApi>()
-                    .ConfigurePrimaryHttpMessageHandler(sp =>
-                    {
-                        var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
-                        return new BinanceStubHttpMessageHandler(config);
-                    });
-            });
-        }).CreateClient();
+                    services.AddHttpClient<IBinanceApi, BinanceApi>()
+                        .ConfigurePrimaryHttpMessageHandler(sp =>
+                        {
+                            var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
+                            return new BinanceStubHttpMessageHandler(config);
+                        });
+                });
+            }).CreateClient();
     }
 
     [Trait("Category", "Integration test")]

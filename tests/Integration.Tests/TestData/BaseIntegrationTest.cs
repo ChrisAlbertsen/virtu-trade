@@ -2,10 +2,11 @@
 using System.Threading.Tasks;
 using Infrastructure.Binance;
 using Integration.Tests.BrokerController.Stubs;
-using Integration.Tests.Utils;
+using Integration.Tests.TestData.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Persistence;
@@ -31,8 +32,16 @@ public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestAppDbFa
     {
         var client = factory.WithWebHostBuilder(builder =>
         {
+            builder.ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.AddJsonFile("TestConfigs.json");
+            });
+            
             builder.ConfigureTestServices(services =>
             {
+                services.AddOptions<TestAuthOptions>()
+                    .BindConfiguration("TestAuthUser");
+                
                 services.AddAuthentication("TestScheme")
                     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
                         "TestScheme", options => { });
