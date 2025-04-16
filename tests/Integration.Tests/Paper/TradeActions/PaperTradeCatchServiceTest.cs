@@ -4,7 +4,7 @@ using Persistence;
 using Service.Interfaces;
 using Service.Paper;
 
-namespace Integration.Tests.Service.Paper;
+namespace Integration.Tests.Paper.TradeActions;
 
 [TestSubject(typeof(PaperPortfolioService))]
 public class PaperTradeCatchServiceTest

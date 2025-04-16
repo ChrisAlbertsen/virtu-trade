@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Api.Utils;
 using Data.AuthModels;
 using Infrastructure.Binance;
 using Microsoft.AspNetCore.Authorization;
@@ -79,6 +80,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigration();
 }
 
 app.UseHttpLogging();

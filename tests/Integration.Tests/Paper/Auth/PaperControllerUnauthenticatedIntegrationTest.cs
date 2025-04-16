@@ -7,7 +7,7 @@ using Data.Entities;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
 
-namespace Integration.Tests.PaperController;
+namespace Integration.Tests.Paper.Auth;
 
 public class PaperControllerUnauthenticatedIntegrationTest(WebApplicationFactory<Program> factory)
     : IClassFixture<WebApplicationFactory<Program>>

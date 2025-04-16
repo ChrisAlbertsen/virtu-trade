@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -9,9 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Persistence;
 using Testcontainers.PostgreSql;
 
-namespace Integration.Tests.Utils;
+namespace Integration.Tests.TestData;
 
-public class IntegrationTestVirtuTradeFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class IntegrationTestAppDbFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("postgres:latest")
@@ -24,14 +23,14 @@ public class IntegrationTestVirtuTradeFactory : WebApplicationFactory<Program>, 
     {
         builder.ConfigureTestServices(services =>
             {
-                var descriptor = services
-                    .SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<AppDbContext>));
+                var descriptor = Enumerable
+                    .SingleOrDefault<ServiceDescriptor>(services, s => s.ServiceType == typeof(DbContextOptions<AppDbContext>));
                 
                 if(descriptor is not null) services.Remove(descriptor);
 
-                services.AddDbContext<AppDbContext>(options =>
+                EntityFrameworkServiceCollectionExtensions.AddDbContext<AppDbContext>(services, options =>
                 {
-                    options.UseNpgsql(_dbContainer.GetConnectionString());
+                    NpgsqlDbContextOptionsBuilderExtensions.UseNpgsql(options, _dbContainer.GetConnectionString());
                 });
             }
         );
