@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 using Data.DTOs.CurrentPrice;
+using Data.Entities;
 using Integration.Tests.TestData;
 using JetBrains.Annotations;
 using Service.Paper;
@@ -7,21 +10,16 @@ using Service.Paper;
 namespace Integration.Tests.Paper.PortfolioActions;
 
 [TestSubject(typeof(PaperPortfolioService))]
-public class CreatePortfolioTests : BaseIntegrationTest
+public class CreatePortfolioTests(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
-    private readonly PaperPortfolioService _paperPortfolioService;
-
-    public CreatePortfolioTests(IntegrationTestAppDbFactory dbFactory) : base(dbFactory)
-    {
-    }
+    
     
     [Trait("Category", "Integration test")]
-    [Fact(DisplayName = "Should return a current price from Binance")]
+    [Fact(DisplayName = "Should successfully create portfolio")]
     public async Task CreatePortfolio_ShouldReturnGuid()
     {
-        var response = await _client.GetFromJsonAsync<CurrentPriceResponse>("api/broker/prices/current?symbol=BTCUSDT");
+        var response = await HttpClientAuthenticated.GetFromJsonAsync<Portfolio>("api/paper/create-portfolio");
         Assert.NotNull(response);
-        Assert.Equal(104080.99000000m, response.Price);
-        Assert.Equal("BTCUSDT", response.Symbol);
+        
     }
 }

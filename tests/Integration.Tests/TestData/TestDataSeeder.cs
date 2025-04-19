@@ -13,8 +13,6 @@ namespace Integration.Tests.TestData;
 
 public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> options)
 {
-    private readonly Faker _faker = new();
-
     private readonly List<Portfolio> _portfolios = [];
     private readonly List<Trade> _trades = [];
     private readonly List<Holding> _holdings = [];
