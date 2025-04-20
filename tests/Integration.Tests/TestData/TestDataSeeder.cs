@@ -7,6 +7,7 @@ using Data.AuthModels;
 using Data.Entities;
 using Integration.Tests.TestData.Auth;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 using Persistence;
 
 namespace Integration.Tests.TestData;
@@ -16,6 +17,7 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
     private readonly List<Portfolio> _portfolios = [];
     private readonly List<Trade> _trades = [];
     private readonly List<Holding> _holdings = [];
+    private readonly List<User> _users = [];
     private readonly List<UserPortfolioAccess> _userPortfolioAccesses = [];
 
     public async Task SeedAsync()
@@ -23,7 +25,8 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
         await PortfolioFaker();
         await TradeFaker();
         await HoldingFaker();
-        await UserPortfolioAccess();
+        await UserFaker();
+        await UserPortfolioAccessFaker();
         
         await context.SaveChangesAsync();
     }
@@ -57,12 +60,12 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
         var tradeFaker = new Faker<Trade>()
             .RuleFor(t => t.Id, f => f.Random.Guid())
             .RuleFor(t => t.PortfolioId, f => f.PickRandom(_portfolios).Id)
-            .RuleFor(t => t.TradeDateTime, f => f.Date.RecentOffset(days: 30).DateTime)
+            .RuleFor(t => t.TradeDateTime, f => f.Date.RecentOffset(days: 30).UtcDateTime)
             .RuleFor(t => t.Price, f => f.Finance.Amount(10m, 1000m))
             .RuleFor(t => t.Quantity, f => f.Random.Decimal(0.1m, 100m))
             .RuleFor(t => t.Symbol, f => f.Finance.Currency().Code);
         
-        _trades.AddRange(tradeFaker.Generate(100));
+        _trades.AddRange(tradeFaker.Generate(40));
         await context.Trades.AddRangeAsync(_trades);
     }
 
@@ -75,15 +78,36 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
             .RuleFor(h => h.Quantity, f => f.Random.Decimal(1m, 500m))
             .RuleFor(h => h.AveragePurchasePrice, f => f.Finance.Amount(5m, 1000m));
         
-        _holdings.AddRange(holdingFaker.Generate(100));
+        _holdings.AddRange(holdingFaker.Generate(20));
         await context.Holdings.AddRangeAsync(_holdings);
     }
 
-    private async Task UserPortfolioAccess()
+    private async Task UserFaker()
+    {
+        var userFaker = new Faker<User>()
+            .RuleFor(u => u.UserName, f => f.Internet.UserName())
+            .RuleFor(u => u.Email, f => f.Internet.Email());
+        
+        _users.AddRange(userFaker.Generate(10));
+        
+        _users.Add(new User()
+        {
+            Id = options.Value.TestAuthUserA.UserId,
+        });
+
+        _users.Add(new User()
+        {
+            Id = options.Value.TestAuthUserB.UserId,
+        });
+        
+        await context.Users.AddRangeAsync(_users);
+    }
+    
+    private async Task UserPortfolioAccessFaker()
     {
         var userPortfolioFaker = new Faker<UserPortfolioAccess>()
             .RuleFor(u => u.PortfolioId, f => f.PickRandom(_portfolios).Id)
-            .RuleFor(u => u.UserId, f => f.Random.Guid().ToString());
+            .RuleFor(u => u.UserId, f => f.PickRandom(_users).Id);
         
         _userPortfolioAccesses.AddRange(userPortfolioFaker.Generate(10));
         
