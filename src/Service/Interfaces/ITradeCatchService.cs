@@ -3,7 +3,7 @@ using Data.DTOs.BaseModels;
 
 namespace Service.Interfaces;
 
-public interface IPaperTradeCatchService
+public interface ITradeCatchService
 {
     Task CatchTrade(BaseOrder order);
 }

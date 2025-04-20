@@ -7,8 +7,8 @@ using Service.Interfaces;
 
 namespace Service.Paper;
 
-public class PaperTradeCatchService(IPaperPortfolioService portfolioService, AppDbContext dbContext)
-    : IPaperTradeCatchService
+public class PaperTradeCatchService(IPortfolioService portfolioService, AppDbContext dbContext)
+    : ITradeCatchService
 {
     public async Task CatchTrade(BaseOrder order)
     {

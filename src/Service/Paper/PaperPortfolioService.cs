@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Data.AuthModels;
 using Data.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Service.Exceptions.PortfolioExceptions;
@@ -10,12 +13,12 @@ using Service.Interfaces;
 
 namespace Service.Paper;
 
-public class PaperPortfolioService(AppDbContext dbContext) : IPaperPortfolioService
+public class PaperPortfolioService(AppDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+    : IPortfolioService
 {
     public async Task<List<Holding>> GetHoldingsAsync(Guid portfolioId)
     {
-        return await dbContext
-            .Holdings
+        return await dbContext.Holdings
             .Where(h => h.PortfolioId == portfolioId)
             .ToListAsync();
     }
@@ -29,17 +32,25 @@ public class PaperPortfolioService(AppDbContext dbContext) : IPaperPortfolioServ
 
     public async Task<Portfolio> CreatePortfolio()
     {
+        var portfolioId = Guid.NewGuid();
         var portfolio = new Portfolio
         {
-            Id = Guid.NewGuid(),
+            Id = portfolioId,
             Cash = 0,
             ReservedCash = 0,
             Holdings = new List<Holding>()
         };
-
         dbContext.Portfolios.Add(portfolio);
-        await dbContext.EnsuredSaveChangesAsync();
-        return portfolio;
+        GiveUserAccessToPortfolio(portfolio.Id);
+        try
+        {
+            await dbContext.EnsuredSaveChangesAsync(2);
+            return portfolio;
+        }
+        catch (Exception e)
+        {
+            throw new PortfolioCreationFailedException(portfolioId);
+        }
     }
 
     public async Task DepositMoneyToPortfolio(Guid portfolioId, decimal moneyToDeposit)
@@ -93,8 +104,22 @@ public class PaperPortfolioService(AppDbContext dbContext) : IPaperPortfolioServ
             .FirstOrDefaultAsync(p => p.Id == portfolioId);
     }
 
-    private bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)
+    private static bool PortfolioHasSufficientCash(Portfolio portfolio, decimal neededCash)
     {
         return portfolio.Cash >= neededCash;
+    }
+
+    private string GetClaimUserIdFromHttpContext()
+    {
+        var userId = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (userId is not null) return userId;
+        throw new UnauthorizedAccessException("No UserId found in claim");
+    }
+
+    private void GiveUserAccessToPortfolio(Guid portfolioId)
+    {
+        var portfolioUserMapping = new UserPortfolioAccess
+            { PortfolioId = portfolioId, UserId = GetClaimUserIdFromHttpContext() };
+        dbContext.UserPortfolioAccess.Add(portfolioUserMapping);
     }
 }

@@ -10,4 +10,6 @@ public class Trade
     public required decimal Price { get; set; }
     public required decimal Quantity { get; set; }
     public required string Symbol { get; set; }
+
+    public Portfolio Portfolio { get; set; }
 }

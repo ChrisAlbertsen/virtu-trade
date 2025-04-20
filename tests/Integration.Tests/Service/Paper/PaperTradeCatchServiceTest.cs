@@ -10,15 +10,15 @@ namespace Integration.Tests.Service.Paper;
 public class PaperTradeCatchServiceTest
 {
     private readonly Mock<AppDbContext> _dbContext;
-    private readonly IPaperTradeCatchService _paperTradeCatchService;
-    private readonly Mock<IPaperPortfolioService> _portfolioService;
+    private readonly Mock<IPortfolioService> _portfolioService;
+    private readonly ITradeCatchService _tradeCatchService;
 
-    public PaperTradeCatchServiceTest(Mock<IPaperPortfolioService> portfolioService,
+    public PaperTradeCatchServiceTest(Mock<IPortfolioService> portfolioService,
         Mock<AppDbContext> dbContext)
     {
         _portfolioService = portfolioService;
         _dbContext = dbContext;
-        _paperTradeCatchService = new PaperTradeCatchService(portfolioService.Object, dbContext.Object);
+        _tradeCatchService = new PaperTradeCatchService(portfolioService.Object, dbContext.Object);
     }
 
     //TODO: Write integration tests when TestContainer is implemented

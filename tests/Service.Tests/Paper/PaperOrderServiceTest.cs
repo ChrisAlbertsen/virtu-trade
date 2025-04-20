@@ -15,14 +15,14 @@ public class PaperOrderServiceTests
 {
     private readonly Mock<IBrokerDataService> _brokerDataService;
     private readonly PaperOrderService _paperOrderService;
-    private readonly Mock<IPaperPortfolioService> _paperPortfolioService;
-    private readonly Mock<IPaperTradeCatchService> _paperTradeCatchService;
+    private readonly Mock<IPortfolioService> _paperPortfolioService;
+    private readonly Mock<ITradeCatchService> _paperTradeCatchService;
 
     public PaperOrderServiceTests()
     {
         _brokerDataService = new Mock<IBrokerDataService>();
-        _paperPortfolioService = new Mock<IPaperPortfolioService>();
-        _paperTradeCatchService = new Mock<IPaperTradeCatchService>();
+        _paperPortfolioService = new Mock<IPortfolioService>();
+        _paperTradeCatchService = new Mock<ITradeCatchService>();
         var logger = new Mock<ILogger<PaperOrderService>>();
         _paperOrderService = new PaperOrderService(_paperPortfolioService.Object, _paperTradeCatchService.Object,
             _brokerDataService.Object, logger.Object);

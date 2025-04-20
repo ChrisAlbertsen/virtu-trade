@@ -9,4 +9,6 @@ public class Holding
     public required string Symbol { get; set; }
     public required decimal Quantity { get; set; }
     public required decimal AveragePurchasePrice { get; set; }
+
+    public Portfolio Portfolio { get; set; }
 }
