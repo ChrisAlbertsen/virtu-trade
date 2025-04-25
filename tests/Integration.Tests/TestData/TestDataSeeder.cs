@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
 using Data.AuthModels;
 using Data.Entities;
 using Integration.Tests.TestData.Auth;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic;
 using Persistence;
 
 namespace Integration.Tests.TestData;
 
 public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> options)
 {
+    private readonly List<Holding> _holdings = [];
     private readonly List<Portfolio> _portfolios = [];
     private readonly List<Trade> _trades = [];
-    private readonly List<Holding> _holdings = [];
-    private readonly List<User> _users = [];
     private readonly List<UserPortfolioAccess> _userPortfolioAccesses = [];
+    private readonly List<User> _users = [];
 
     public async Task SeedAsync()
     {
@@ -27,7 +25,7 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
         await HoldingFaker();
         await UserFaker();
         await UserPortfolioAccessFaker();
-        
+
         await context.SaveChangesAsync();
     }
 
@@ -37,21 +35,21 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
             .RuleFor(p => p.Id, f => f.Random.Guid())
             .RuleFor(p => p.Cash, f => f.Random.Decimal());
         _portfolios.AddRange(portfolioFaker.Generate(10));
-        
-        _portfolios.Add(new Portfolio()
+
+        _portfolios.Add(new Portfolio
         {
             Id = Guid.Parse(options.Value.TestAuthUserA.PortfolioId),
             Cash = 10000,
             ReservedCash = 0
         });
 
-        _portfolios.Add(new Portfolio()
+        _portfolios.Add(new Portfolio
         {
             Id = Guid.Parse(options.Value.TestAuthUserB.PortfolioId),
             Cash = 10000,
             ReservedCash = 0
         });
-        
+
         await context.Portfolios.AddRangeAsync(_portfolios);
     }
 
@@ -60,11 +58,11 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
         var tradeFaker = new Faker<Trade>()
             .RuleFor(t => t.Id, f => f.Random.Guid())
             .RuleFor(t => t.PortfolioId, f => f.PickRandom(_portfolios).Id)
-            .RuleFor(t => t.TradeDateTime, f => f.Date.RecentOffset(days: 30).UtcDateTime)
-            .RuleFor(t => t.Price, f => f.Finance.Amount(10m, 1000m))
+            .RuleFor(t => t.TradeDateTime, f => f.Date.RecentOffset(30).UtcDateTime)
+            .RuleFor(t => t.Price, f => f.Finance.Amount(10m))
             .RuleFor(t => t.Quantity, f => f.Random.Decimal(0.1m, 100m))
             .RuleFor(t => t.Symbol, f => f.Finance.Currency().Code);
-        
+
         _trades.AddRange(tradeFaker.Generate(40));
         await context.Trades.AddRangeAsync(_trades);
     }
@@ -76,8 +74,8 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
             .RuleFor(h => h.PortfolioId, f => f.PickRandom(_portfolios).Id)
             .RuleFor(h => h.Symbol, f => f.Finance.Currency().Code)
             .RuleFor(h => h.Quantity, f => f.Random.Decimal(1m, 500m))
-            .RuleFor(h => h.AveragePurchasePrice, f => f.Finance.Amount(5m, 1000m));
-        
+            .RuleFor(h => h.AveragePurchasePrice, f => f.Finance.Amount(5m));
+
         _holdings.AddRange(holdingFaker.Generate(20));
         await context.Holdings.AddRangeAsync(_holdings);
     }
@@ -87,37 +85,31 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
         var userFaker = new Faker<User>()
             .RuleFor(u => u.UserName, f => f.Internet.UserName())
             .RuleFor(u => u.Email, f => f.Internet.Email());
-        
-        _users.AddRange(userFaker.Generate(10));
-        
-        _users.Add(new User()
+
+        _users.AddRange(userFaker.Generate(5));
+
+        _users.Add(new User
         {
-            Id = options.Value.TestAuthUserA.UserId,
+            Id = options.Value.TestAuthUserA.UserId
         });
 
-        _users.Add(new User()
+        _users.Add(new User
         {
-            Id = options.Value.TestAuthUserB.UserId,
+            Id = options.Value.TestAuthUserB.UserId
         });
-        
+
         await context.Users.AddRangeAsync(_users);
     }
-    
+
     private async Task UserPortfolioAccessFaker()
     {
-        var userPortfolioFaker = new Faker<UserPortfolioAccess>()
-            .RuleFor(u => u.PortfolioId, f => f.PickRandom(_portfolios).Id)
-            .RuleFor(u => u.UserId, f => f.PickRandom(_users).Id);
-        
-        _userPortfolioAccesses.AddRange(userPortfolioFaker.Generate(10));
-        
-        _userPortfolioAccesses.Add(new UserPortfolioAccess()
+        _userPortfolioAccesses.Add(new UserPortfolioAccess
         {
             PortfolioId = Guid.Parse(options.Value.TestAuthUserA.PortfolioId),
             UserId = options.Value.TestAuthUserA.UserId
         });
-        
-        _userPortfolioAccesses.Add(new UserPortfolioAccess()
+
+        _userPortfolioAccesses.Add(new UserPortfolioAccess
         {
             PortfolioId = Guid.Parse(options.Value.TestAuthUserB.PortfolioId),
             UserId = options.Value.TestAuthUserB.UserId

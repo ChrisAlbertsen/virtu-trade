@@ -25,19 +25,30 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
         .WithPassword("postgres")
         .Build();
 
+    public Task InitializeAsync()
+    {
+        return _dbContainer.StartAsync();
+    }
+
+    public new Task DisposeAsync()
+    {
+        return _dbContainer.StopAsync();
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseContentRoot(".");
         builder.ConfigureAppConfiguration((context, configBuilder) =>
         {
-            configBuilder.AddJsonFile("TestConfigs.json", optional: false);
+            configBuilder.AddJsonFile("TestConfigs.json", false);
         });
-        
+
         builder.ConfigureTestServices(services =>
             {
                 ConfigureOptions(services);
                 ConfigureAppDbService(services);
-                ConfigureHttpClient(services);
+                ConfigureAuth(services);
+                ConfigureBinanceApi(services);
             }
         );
     }
@@ -51,39 +62,29 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
     private void ConfigureAppDbService(IServiceCollection services)
     {
         var descriptor = services
-            .SingleOrDefault<ServiceDescriptor>(s => s.ServiceType == typeof(DbContextOptions<AppDbContext>));
-                
-        if(descriptor is not null) services.Remove(descriptor);
+            .SingleOrDefault(s => s.ServiceType == typeof(DbContextOptions<AppDbContext>));
 
-        services.AddDbContext<AppDbContext>(options =>
-        {
-            options.UseNpgsql(_dbContainer.GetConnectionString());
-        });
+        if (descriptor is not null) services.Remove(descriptor);
+
+        services.AddDbContext<AppDbContext>(options => { options.UseNpgsql(_dbContainer.GetConnectionString()); });
 
         services.AddScoped<TestDataSeeder, TestDataSeeder>();
     }
 
-    private void ConfigureHttpClient(IServiceCollection services)
+    private void ConfigureAuth(IServiceCollection services)
     {
         services.AddAuthentication("TestScheme")
             .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
                 "TestScheme", options => { });
+    }
 
+    private void ConfigureBinanceApi(IServiceCollection services)
+    {
         services.AddHttpClient<IBinanceApi, BinanceApi>()
             .ConfigurePrimaryHttpMessageHandler(sp =>
             {
                 var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
                 return new BinanceStubHttpMessageHandler(config);
             });
-    }
-
-    public Task InitializeAsync()
-    {
-        return _dbContainer.StartAsync();
-    }
-
-    public new Task DisposeAsync()
-    {
-        return _dbContainer.StopAsync();
     }
 }

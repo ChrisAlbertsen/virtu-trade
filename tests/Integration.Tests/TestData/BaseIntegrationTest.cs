@@ -1,14 +1,8 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Infrastructure.Binance;
-using Integration.Tests.BrokerController.Stubs;
-using Integration.Tests.TestData.Auth;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Persistence;
 
 namespace Integration.Tests.TestData;
@@ -16,9 +10,17 @@ namespace Integration.Tests.TestData;
 public abstract class BaseIntegrationTest(IntegrationTestSessionFactory sessionFactory)
     : IClassFixture<IntegrationTestSessionFactory>, IAsyncLifetime
 {
-    private readonly AppDbContext _dbContext = sessionFactory.Services.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
-    private readonly TestDataSeeder _seeder = sessionFactory.Services.CreateScope().ServiceProvider.GetRequiredService<TestDataSeeder>();
-    public readonly HttpClient HttpClientAuthenticated = sessionFactory.Services.CreateScope().ServiceProvider.GetRequiredService<HttpClient>();
+    private readonly AppDbContext _dbContext =
+        sessionFactory.Services.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
+
+    private readonly TestDataSeeder _seeder =
+        sessionFactory.Services.CreateScope().ServiceProvider.GetRequiredService<TestDataSeeder>();
+
+    public readonly HttpClient HttpClientAuthenticated = sessionFactory.CreateClient(
+        new WebApplicationFactoryClientOptions
+        {
+            BaseAddress = new Uri("http://localhost:5070/")
+        });
 
     public async Task InitializeAsync()
     {
