@@ -25,9 +25,12 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
         .WithPassword("postgres")
         .Build();
 
-    public Task InitializeAsync()
+    public async Task InitializeAsync()
     {
-        return _dbContainer.StartAsync();
+        await _dbContainer.StartAsync();
+        
+        var testDataSeeder = Services.CreateScope().ServiceProvider.GetRequiredService<TestDataSeeder>();
+        await testDataSeeder.SeedAsync();
     }
 
     public new Task DisposeAsync()

@@ -17,7 +17,7 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
     private readonly List<Trade> _trades = [];
     private readonly List<UserPortfolioAccess> _userPortfolioAccesses = [];
     private readonly List<User> _users = [];
-
+    
     public async Task SeedAsync()
     {
         await PortfolioFaker();

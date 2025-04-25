@@ -6,6 +6,7 @@ using Service.Paper;
 
 namespace Integration.Tests.Paper.TradeActions;
 
+[Collection("TestAppDb")]
 [TestSubject(typeof(PaperPortfolioService))]
 public class PaperTradeCatchServiceTest
 {
