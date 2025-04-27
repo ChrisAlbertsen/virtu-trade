@@ -59,7 +59,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                 .WithMany(p => p.Trades)
                 .HasForeignKey(t => t.PortfolioId);
         });
-        
+
         modelBuilder.Entity<UserPortfolioAccess>(userPortfolioAccess =>
         {
             userPortfolioAccess

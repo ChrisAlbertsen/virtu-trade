@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace Integration.Tests.BrokerController;
+namespace Integration.Tests.BrokerDataActions;
 
 public class BrokerControllerUnauthenticatedIntegrationTest : IClassFixture<WebApplicationFactory<Program>>
 {
