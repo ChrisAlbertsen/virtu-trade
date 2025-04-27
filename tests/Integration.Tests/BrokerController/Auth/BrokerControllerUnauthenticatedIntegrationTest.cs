@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
 
-namespace Integration.Tests.BrokerDataActions;
+namespace Integration.Tests.BrokerController.Auth;
 
 public class BrokerControllerUnauthenticatedIntegrationTest : IClassFixture<WebApplicationFactory<Program>>
 {
@@ -23,7 +23,7 @@ public class BrokerControllerUnauthenticatedIntegrationTest : IClassFixture<WebA
         {
             builder.ConfigureTestServices(services =>
             {
-                services.AddHttpClient<IBinanceApi, BinanceApi>()
+                HttpClientFactoryServiceCollectionExtensions.AddHttpClient<IBinanceApi, BinanceApi>(services)
                     .ConfigurePrimaryHttpMessageHandler(sp =>
                     {
                         var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();

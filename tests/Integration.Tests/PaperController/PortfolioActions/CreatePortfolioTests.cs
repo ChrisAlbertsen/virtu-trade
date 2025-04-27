@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Api.Controllers;
 using Data.Entities;
 using Integration.Tests.TestData;
 using JetBrains.Annotations;
@@ -9,7 +10,7 @@ using Service.Paper;
 namespace Integration.Tests.Paper.PortfolioActions;
 
 [Collection("TestContainer Db")]
-[TestSubject(typeof(PaperPortfolioService))]
+[TestSubject(typeof(PaperController))]
 public class CreatePortfolioTests(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
     [Trait("Category", "Integration test")]
