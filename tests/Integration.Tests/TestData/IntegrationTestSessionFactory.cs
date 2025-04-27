@@ -28,7 +28,7 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-        
+
         var testDataSeeder = Services.CreateScope().ServiceProvider.GetRequiredService<TestDataSeeder>();
         await testDataSeeder.SeedAsync();
     }

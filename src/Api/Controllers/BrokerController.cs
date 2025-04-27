@@ -4,7 +4,6 @@ using Data.DTOs.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Interfaces;
-using IAuthorizationService = Microsoft.AspNetCore.Authorization.IAuthorizationService;
 
 namespace Api.Controllers;
 

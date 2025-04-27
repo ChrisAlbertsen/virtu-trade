@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
@@ -17,5 +16,4 @@ public abstract class BaseIntegrationTest(IntegrationTestSessionFactory sessionF
         {
             BaseAddress = new Uri("http://localhost:5070/")
         });
-    
 }
