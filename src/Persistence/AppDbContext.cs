@@ -77,13 +77,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         });
     }
 
-    public async Task<int> EnsuredSaveChangesAsync(int expectedChanges = 1)
+    public async Task<int> EnsuredSaveChangesAsync(int minExpectedChanges = 1)
     {
         var affectedRows = await SaveChangesAsync();
 
-        if (affectedRows < expectedChanges)
+        if (affectedRows < minExpectedChanges)
             throw new DbUpdateException(
-                $"Expected at least {expectedChanges} database changes, but only {affectedRows} were applied.");
+                $"Expected at least {minExpectedChanges} database changes, but only {affectedRows} were applied.");
         return affectedRows;
     }
 }
