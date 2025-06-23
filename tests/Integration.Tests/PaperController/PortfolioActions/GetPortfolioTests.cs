@@ -41,9 +41,19 @@ public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseInte
 
     [Trait("Category", "Integration test")]
     [Fact(DisplayName = "Should fail to get not existing portfolio")]
-    public async Task? GetPortfolio_WhenPortfolioDoesNotExist_ShouldReturnError()
+    public async Task? GetPortfolio_WhenPortfolioDoesNotExist_ShouldReturnForbidden()
     {
         var response = await HttpClientAuthenticated.GetAsync($"api/paper/portfolio/{Guid.Empty}");
+        
+        Assert.NotNull(response);
+        Assert.Equal(System.Net.HttpStatusCode.Forbidden, response.StatusCode);
+    }
+    
+    [Trait("Category", "Integration test")]
+    [Fact(DisplayName = "Should fail to get other user's portfolio")]
+    public async Task? GetPortfolio_WhenRequestedByUnauthenticatedUser_ShouldReturnForbidden()
+    {
+        var response = await HttpClientAuthenticated.GetAsync($"api/paper/portfolio/{TestData.TestAuthUserUnauthenticated.PortfolioId}");
         
         Assert.NotNull(response);
         Assert.Equal(System.Net.HttpStatusCode.Forbidden, response.StatusCode);
