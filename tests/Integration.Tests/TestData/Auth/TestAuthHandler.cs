@@ -19,7 +19,7 @@ public class TestAuthHandler(
         var claims = new[]
         {
             new Claim(ClaimTypes.Name, "Test user"),
-            new Claim(ClaimTypes.NameIdentifier, testAuthOptions.Value.TestAuthUserA.UserId)
+            new Claim(ClaimTypes.NameIdentifier, testAuthOptions.Value.TestAuthUserAuthenticated.UserId)
         };
         var identity = new ClaimsIdentity(claims, "Test");
         var principal = new ClaimsPrincipal(identity);

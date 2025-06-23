@@ -19,7 +19,7 @@ public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseInte
     [Fact(DisplayName = "Should successfully return portfolio")]
     public async Task GetPortfolio_ShouldReturnPortfolio()
     { 
-        var response = await HttpClientAuthenticated.GetAsync($"api/paper/portfolio/{TestData.TestAuthUserA.PortfolioId}");
+        var response = await HttpClientAuthenticated.GetAsync($"api/paper/portfolio/{TestData.TestAuthUserAuthenticated.PortfolioId}");
         
         Assert.NotNull(response);
         Assert.True(response.IsSuccessStatusCode);
@@ -32,7 +32,7 @@ public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseInte
         var persistedPortfolio = await DbContext
             .Portfolios
             .Include(p => p.Holdings)
-            .FirstOrDefaultAsync(p => p.Id == new Guid(TestData.TestAuthUserA.PortfolioId));
+            .FirstOrDefaultAsync(p => p.Id == new Guid(TestData.TestAuthUserAuthenticated.PortfolioId));
         
         Assert.NotNull(persistedPortfolio);
 
