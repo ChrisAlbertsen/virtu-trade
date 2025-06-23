@@ -39,9 +39,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                 .HasKey(h => h.Id);
 
             holding
-                .HasOne(h => h.Portfolio)
-                .WithMany(p => p.Holdings)
-                .HasForeignKey(h => h.PortfolioId);
+                .Property(h => h.PortfolioId)
+                .IsRequired();
         });
 
 
