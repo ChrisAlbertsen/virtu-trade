@@ -10,7 +10,7 @@ using Persistence;
 
 namespace Integration.Tests.TestData;
 
-public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> options)
+public class TestDataSeeder(AppDbContext context, IOptions<TestDataOptions> options)
 {
     private readonly List<Holding> _holdings = [];
     private readonly List<Portfolio> _portfolios = [];

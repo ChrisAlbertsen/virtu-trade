@@ -9,7 +9,7 @@ public class TestAuthUserConfig
     [Required] public string PortfolioId { get; set; } = default!;
 }
 
-public class TestAuthOptions
+public class TestDataOptions
 {
     [Required] public TestAuthUserConfig TestAuthUserA { get; set; } = new();
 
