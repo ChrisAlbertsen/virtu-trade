@@ -100,7 +100,7 @@ public class PaperPortfolioService(AppDbContext dbContext, IHttpContextAccessor 
     {
         return await dbContext
             .Portfolios
-            .Include(h => h.Holdings)
+            .Include(p => p.Holdings)
             .FirstOrDefaultAsync(p => p.Id == portfolioId);
     }
 

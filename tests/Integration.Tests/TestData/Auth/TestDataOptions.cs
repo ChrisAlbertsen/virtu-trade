@@ -9,9 +9,9 @@ public class TestAuthUserConfig
     [Required] public string PortfolioId { get; set; } = default!;
 }
 
-public class TestAuthOptions
+public class TestDataOptions
 {
-    [Required] public TestAuthUserConfig TestAuthUserA { get; set; } = new();
+    [Required] public TestAuthUserConfig TestAuthUserAuthenticated { get; set; } = new();
 
-    [Required] public TestAuthUserConfig TestAuthUserB { get; set; } = new();
+    [Required] public TestAuthUserConfig TestAuthUserUnauthenticated { get; set; } = new();
 }

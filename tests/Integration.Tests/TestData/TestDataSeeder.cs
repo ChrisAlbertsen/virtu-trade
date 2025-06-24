@@ -10,7 +10,7 @@ using Persistence;
 
 namespace Integration.Tests.TestData;
 
-public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> options)
+public class TestDataSeeder(AppDbContext context, IOptions<TestDataOptions> options)
 {
     private readonly List<Holding> _holdings = [];
     private readonly List<Portfolio> _portfolios = [];
@@ -38,14 +38,14 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
 
         _portfolios.Add(new Portfolio
         {
-            Id = Guid.Parse(options.Value.TestAuthUserA.PortfolioId),
+            Id = Guid.Parse(options.Value.TestAuthUserAuthenticated.PortfolioId),
             Cash = 10000,
             ReservedCash = 0
         });
 
         _portfolios.Add(new Portfolio
         {
-            Id = Guid.Parse(options.Value.TestAuthUserB.PortfolioId),
+            Id = Guid.Parse(options.Value.TestAuthUserUnauthenticated.PortfolioId),
             Cash = 10000,
             ReservedCash = 0
         });
@@ -90,12 +90,12 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
 
         _users.Add(new User
         {
-            Id = options.Value.TestAuthUserA.UserId
+            Id = options.Value.TestAuthUserAuthenticated.UserId
         });
 
         _users.Add(new User
         {
-            Id = options.Value.TestAuthUserB.UserId
+            Id = options.Value.TestAuthUserUnauthenticated.UserId
         });
 
         await context.Users.AddRangeAsync(_users);
@@ -105,14 +105,14 @@ public class TestDataSeeder(AppDbContext context, IOptions<TestAuthOptions> opti
     {
         _userPortfolioAccesses.Add(new UserPortfolioAccess
         {
-            PortfolioId = Guid.Parse(options.Value.TestAuthUserA.PortfolioId),
-            UserId = options.Value.TestAuthUserA.UserId
+            PortfolioId = Guid.Parse(options.Value.TestAuthUserAuthenticated.PortfolioId),
+            UserId = options.Value.TestAuthUserAuthenticated.UserId
         });
 
         _userPortfolioAccesses.Add(new UserPortfolioAccess
         {
-            PortfolioId = Guid.Parse(options.Value.TestAuthUserB.PortfolioId),
-            UserId = options.Value.TestAuthUserB.UserId
+            PortfolioId = Guid.Parse(options.Value.TestAuthUserUnauthenticated.PortfolioId),
+            UserId = options.Value.TestAuthUserUnauthenticated.UserId
         });
 
         await context.UserPortfolioAccess.AddRangeAsync(_userPortfolioAccesses);

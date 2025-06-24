@@ -58,7 +58,7 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
 
     private void ConfigureOptions(IServiceCollection services)
     {
-        services.AddOptions<TestAuthOptions>()
+        services.AddOptions<TestDataOptions>()
             .BindConfiguration("TestAuthUsers");
     }
 
