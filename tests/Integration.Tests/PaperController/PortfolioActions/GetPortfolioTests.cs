@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Api.Controllers;
@@ -56,6 +57,6 @@ public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseInte
         var response = await HttpClientAuthenticated.GetAsync($"api/paper/portfolio/{TestData.TestAuthUserUnauthenticated.PortfolioId}");
         
         Assert.NotNull(response);
-        Assert.Equal(System.Net.HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 }
