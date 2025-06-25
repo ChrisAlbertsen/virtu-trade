@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Data.DTOs.Orders;
 using Infrastructure.Binance;
 using Integration.Tests.BrokerController.Stubs;
+using Integration.Tests.TestData;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,25 +14,21 @@ using Moq;
 
 namespace Integration.Tests.BrokerController.Auth;
 
-public class BrokerControllerUnauthenticatedIntegrationTest : IClassFixture<WebApplicationFactory<Program>>
+// HttpsClient should not be authenticated, why it does not inherit from base class
+public class BrokerControllerUnauthenticatedIntegrationTest(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
 {
-    private readonly HttpClient _client;
-
-    public BrokerControllerUnauthenticatedIntegrationTest(WebApplicationFactory<Program> factory)
+    private readonly HttpClient _client = factory.WithWebHostBuilder(builder =>
     {
-        _client = factory.WithWebHostBuilder(builder =>
+        builder.ConfigureTestServices(services =>
         {
-            builder.ConfigureTestServices(services =>
-            {
-                HttpClientFactoryServiceCollectionExtensions.AddHttpClient<IBinanceApi, BinanceApi>(services)
-                    .ConfigurePrimaryHttpMessageHandler(sp =>
-                    {
-                        var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
-                        return new BinanceStubHttpMessageHandler(config);
-                    });
-            });
-        }).CreateClient();
-    }
+            HttpClientFactoryServiceCollectionExtensions.AddHttpClient<IBinanceApi, BinanceApi>(services)
+                .ConfigurePrimaryHttpMessageHandler(sp =>
+                {
+                    var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
+                    return new BinanceStubHttpMessageHandler(config);
+                });
+        });
+    }).CreateClient();
 
     [Trait("Category", "Integration test")]
     [Theory(DisplayName = "Not authenticated. Should return 401")]
