@@ -10,11 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Integration.Tests.Paper.PortfolioActions;
 
-[Collection("TestContainer Db")]
+
 [TestSubject(typeof(PaperController))]
 public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
-    private const decimal DepositAmount = 100m;
 
     [Trait("Category", "Integration test")]
     [Fact(DisplayName = "Should successfully return portfolio")]
