@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -14,19 +15,20 @@ using Moq;
 
 namespace Integration.Tests.BrokerController.Auth;
 
-// HttpsClient should not be authenticated, why it does not inherit from base class
-public class BrokerControllerUnauthenticatedIntegrationTest(WebApplicationFactory<Program> factory) : IClassFixture<WebApplicationFactory<Program>>
+public class BrokerControllerUnauthenticatedIntegrationTest(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory.UnauthorizedSession())
 {
     private readonly HttpClient _client = factory.WithWebHostBuilder(builder =>
     {
         builder.ConfigureTestServices(services =>
         {
-            HttpClientFactoryServiceCollectionExtensions.AddHttpClient<IBinanceApi, BinanceApi>(services)
+            services.AddHttpClient<IBinanceApi, BinanceApi>()
                 .ConfigurePrimaryHttpMessageHandler(sp =>
                 {
                     var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
                     return new BinanceStubHttpMessageHandler(config);
                 });
+            
+            Console.WriteLine("STOP!");
         });
     }).CreateClient();
 
@@ -48,8 +50,14 @@ public class BrokerControllerUnauthenticatedIntegrationTest(WebApplicationFactor
     [InlineData("orders/execute-market-order")]
     public async Task PostEndpoints_WhenNotAuthenticated_ShouldReturnUnauthorized(string url)
     {
+        var marketOrder = new MarketOrderParams()
+        {
+            PortfolioId = It.IsAny<Guid>(),
+            Quantity = 10,
+            Symbol = "TICKER",
+        };
         var response =
-            await _client.PostAsJsonAsync($"api/broker/{url}", It.IsAny<MarketOrderParams>());
+            await _client.PostAsJsonAsync($"api/broker/{url}", marketOrder);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }
