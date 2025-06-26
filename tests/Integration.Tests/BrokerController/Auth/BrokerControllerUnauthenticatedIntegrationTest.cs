@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Data.DTOs.Orders;
 using Integration.Tests.TestData;
+using Integration.Tests.TestData.Factories;
 using Moq;
 
 namespace Integration.Tests.BrokerController.Auth;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Integration.Tests.TestData;
+namespace Integration.Tests.TestData.Factories;
 
 public class UnauthenticatedIntegrationTestSessionFactory : IntegrationTestSessionFactory
 {

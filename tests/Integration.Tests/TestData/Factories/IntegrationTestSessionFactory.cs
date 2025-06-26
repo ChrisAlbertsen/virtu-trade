@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 using Persistence;
 using Testcontainers.PostgreSql;
 
-namespace Integration.Tests.TestData;
+namespace Integration.Tests.TestData.Factories;
 
 public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {

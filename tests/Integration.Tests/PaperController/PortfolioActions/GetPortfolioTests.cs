@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Api.Controllers;
 using Data.Entities;
 using Integration.Tests.TestData;
+using Integration.Tests.TestData.Factories;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 

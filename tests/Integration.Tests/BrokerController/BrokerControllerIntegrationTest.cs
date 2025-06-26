@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Data.DTOs.CurrentPrice;
 using Data.DTOs.HistoricalPrice;
 using Integration.Tests.TestData;
+using Integration.Tests.TestData.Factories;
 
 namespace Integration.Tests.BrokerDataActions;
 

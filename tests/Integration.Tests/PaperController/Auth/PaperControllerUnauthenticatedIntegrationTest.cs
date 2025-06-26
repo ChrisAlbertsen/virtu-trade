@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Data.Entities;
 using Integration.Tests.TestData;
+using Integration.Tests.TestData.Factories;
 using Moq;
 
 namespace Integration.Tests.Paper.Auth;
