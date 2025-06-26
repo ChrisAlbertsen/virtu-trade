@@ -31,5 +31,4 @@ public abstract class BaseIntegrationTest : IDisposable
     {
         _scope.Dispose();
     }
-    
 }

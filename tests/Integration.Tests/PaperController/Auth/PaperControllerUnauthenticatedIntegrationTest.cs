@@ -5,15 +5,14 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Data.Entities;
 using Integration.Tests.TestData;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
 
 namespace Integration.Tests.Paper.Auth;
 
 [Collection("UnauthenticatedIntegrationTest")]
-public class PaperControllerUnauthenticatedIntegrationTest(UnauthenticatedIntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
+public class PaperControllerUnauthenticatedIntegrationTest(UnauthenticatedIntegrationTestSessionFactory factory)
+    : BaseIntegrationTest(factory)
 {
-
     [Trait("Category", "Integration test")]
     [Fact(DisplayName = "Not authenticated. Should return 401")]
     public async Task CreatePortfolio_WhenNotAuthenticated_ShouldReturnUnauthorized()

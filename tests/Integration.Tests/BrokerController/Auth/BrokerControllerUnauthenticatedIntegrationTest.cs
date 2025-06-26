@@ -4,21 +4,15 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Data.DTOs.Orders;
-using Infrastructure.Binance;
-using Integration.Tests.BrokerController.Stubs;
 using Integration.Tests.TestData;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Integration.Tests.BrokerController.Auth;
 
 [Collection("UnauthenticatedIntegrationTest")]
-public class BrokerControllerUnauthenticatedIntegrationTest(UnauthenticatedIntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
+public class BrokerControllerUnauthenticatedIntegrationTest(UnauthenticatedIntegrationTestSessionFactory factory)
+    : BaseIntegrationTest(factory)
 {
-
     [Trait("Category", "Integration test")]
     [Theory(DisplayName = "Not authenticated. Should return 401")]
     [InlineData("prices/current?symbol=BTCUSDT")]
@@ -37,11 +31,11 @@ public class BrokerControllerUnauthenticatedIntegrationTest(UnauthenticatedInteg
     [InlineData("orders/execute-market-order")]
     public async Task PostEndpoints_WhenNotAuthenticated_ShouldReturnUnauthorized(string url)
     {
-        var marketOrder = new MarketOrderParams()
+        var marketOrder = new MarketOrderParams
         {
             PortfolioId = It.IsAny<Guid>(),
             Quantity = 10,
-            Symbol = "TICKER",
+            Symbol = "TICKER"
         };
         var response =
             await HttpClient.PostAsJsonAsync($"api/broker/{url}", marketOrder);

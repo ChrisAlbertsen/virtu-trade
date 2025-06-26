@@ -5,7 +5,6 @@ using Api.Controllers;
 using Data.Entities;
 using Integration.Tests.TestData;
 using JetBrains.Annotations;
-using Service.Paper;
 
 namespace Integration.Tests.Paper.PortfolioActions;
 

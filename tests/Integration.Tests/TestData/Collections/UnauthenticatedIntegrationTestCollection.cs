@@ -3,5 +3,4 @@
 [CollectionDefinition("UnauthenticatedIntegrationTest")]
 public class UnauthenticatedIntegrationTestCollection : ICollectionFixture<UnauthenticatedIntegrationTestSessionFactory>
 {
-    
 }
