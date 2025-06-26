@@ -24,7 +24,7 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
-    
+
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
