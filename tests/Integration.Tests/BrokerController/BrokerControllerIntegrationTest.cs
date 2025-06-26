@@ -14,7 +14,7 @@ public class BrokerControllerIntegrationTests(IntegrationTestSessionFactory fact
     public async Task GetCurrentPrice_ShouldReturnPrice()
     {
         var response =
-            await HttpClientAuthenticated.GetFromJsonAsync<CurrentPriceResponse>(
+            await HttpClient.GetFromJsonAsync<CurrentPriceResponse>(
                 "api/broker/prices/current?symbol=BTCUSDT");
         Assert.NotNull(response);
         Assert.Equal(104080.99000000m, response.Price);
@@ -26,7 +26,7 @@ public class BrokerControllerIntegrationTests(IntegrationTestSessionFactory fact
     public async Task GetHistoricalPrice_ShouldReturnHistoricalPrices()
     {
         var response =
-            await HttpClientAuthenticated.GetFromJsonAsync<HistoricalPriceResponse>(
+            await HttpClient.GetFromJsonAsync<HistoricalPriceResponse>(
                 "api/broker/prices/historical?symbol=BTCUSDT&interval=1h");
         Assert.NotNull(response);
     }

@@ -19,7 +19,7 @@ public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseInte
     [Fact(DisplayName = "Should successfully return portfolio")]
     public async Task GetPortfolio_ShouldReturnPortfolio()
     { 
-        var response = await HttpClientAuthenticated.GetAsync($"api/paper/portfolio/{TestData.TestAuthUserAuthenticated.PortfolioId}");
+        var response = await HttpClient.GetAsync($"api/paper/portfolio/{TestData.TestAuthUserAuthenticated.PortfolioId}");
         
         Assert.NotNull(response);
         Assert.True(response.IsSuccessStatusCode);
@@ -43,7 +43,7 @@ public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseInte
     [Fact(DisplayName = "Should fail to get not existing portfolio")]
     public async Task? GetPortfolio_WhenPortfolioDoesNotExist_ShouldReturnForbidden()
     {
-        var response = await HttpClientAuthenticated.GetAsync($"api/paper/portfolio/{Guid.Empty}");
+        var response = await HttpClient.GetAsync($"api/paper/portfolio/{Guid.Empty}");
         
         Assert.NotNull(response);
         Assert.Equal(System.Net.HttpStatusCode.Forbidden, response.StatusCode);
@@ -53,7 +53,7 @@ public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseInte
     [Fact(DisplayName = "Should fail to get other user's portfolio")]
     public async Task? GetPortfolio_WhenRequestedByUnauthenticatedUser_ShouldReturnForbidden()
     {
-        var response = await HttpClientAuthenticated.GetAsync($"api/paper/portfolio/{TestData.TestAuthUserUnauthenticated.PortfolioId}");
+        var response = await HttpClient.GetAsync($"api/paper/portfolio/{TestData.TestAuthUserUnauthenticated.PortfolioId}");
         
         Assert.NotNull(response);
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);

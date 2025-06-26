@@ -21,7 +21,7 @@ public class DepositMoneyTests(IntegrationTestSessionFactory factory) : BaseInte
     {
         var portfolio = await CreatePortfolio();
         
-        var depositResponse = await HttpClientAuthenticated.PostAsync($"api/paper/deposit-money?portfolioId={portfolio.Id}&moneyToDeposit={DepositAmount}", null);
+        var depositResponse = await HttpClient.PostAsync($"api/paper/deposit-money?portfolioId={portfolio.Id}&moneyToDeposit={DepositAmount}", null);
         
         Assert.NotNull(depositResponse);
         Assert.True(depositResponse.IsSuccessStatusCode);
@@ -38,7 +38,7 @@ public class DepositMoneyTests(IntegrationTestSessionFactory factory) : BaseInte
     [Fact(DisplayName = "Should fail to deposit paper money to portfolio")]
     public async Task? DepositMoney_WhenPortfolioDoesNotExist_ShouldReturnError()
     {
-        var depositResponse = await HttpClientAuthenticated.PostAsync($"api/paper/deposit-money?portfolioId={Guid.NewGuid()}&moneyToDeposit={DepositAmount}", null);
+        var depositResponse = await HttpClient.PostAsync($"api/paper/deposit-money?portfolioId={Guid.NewGuid()}&moneyToDeposit={DepositAmount}", null);
         
         Assert.NotNull(depositResponse);
         Assert.False(depositResponse.IsSuccessStatusCode);
@@ -47,7 +47,7 @@ public class DepositMoneyTests(IntegrationTestSessionFactory factory) : BaseInte
 
     private async Task<Portfolio> CreatePortfolio()
     {
-        var portfolioResponse = await HttpClientAuthenticated.PostAsJsonAsync<Portfolio>("api/paper/create-portfolio", null!);
+        var portfolioResponse = await HttpClient.PostAsJsonAsync<Portfolio>("api/paper/create-portfolio", null!);
         Assert.NotNull(portfolioResponse);
         Assert.True(portfolioResponse.IsSuccessStatusCode);
 
