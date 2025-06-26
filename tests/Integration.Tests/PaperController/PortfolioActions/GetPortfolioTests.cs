@@ -12,6 +12,7 @@ namespace Integration.Tests.Paper.PortfolioActions;
 
 
 [TestSubject(typeof(PaperController))]
+[Collection("IntegrationTest")]
 public class GetPortfolioTests(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
 

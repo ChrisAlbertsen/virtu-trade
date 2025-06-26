@@ -15,22 +15,9 @@ using Moq;
 
 namespace Integration.Tests.BrokerController.Auth;
 
-public class BrokerControllerUnauthenticatedIntegrationTest(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory.UnauthorizedSession())
+[Collection("UnauthenticatedIntegrationTest")]
+public class BrokerControllerUnauthenticatedIntegrationTest(UnauthenticatedIntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
-    private readonly HttpClient _client = factory.WithWebHostBuilder(builder =>
-    {
-        builder.ConfigureTestServices(services =>
-        {
-            services.AddHttpClient<IBinanceApi, BinanceApi>()
-                .ConfigurePrimaryHttpMessageHandler(sp =>
-                {
-                    var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
-                    return new BinanceStubHttpMessageHandler(config);
-                });
-            
-            Console.WriteLine("STOP!");
-        });
-    }).CreateClient();
 
     [Trait("Category", "Integration test")]
     [Theory(DisplayName = "Not authenticated. Should return 401")]
@@ -40,7 +27,7 @@ public class BrokerControllerUnauthenticatedIntegrationTest(IntegrationTestSessi
     {
         var response = await Assert
             .ThrowsAsync<HttpRequestException>(
-                () => _client.GetFromJsonAsync<object>($"api/broker/{url}"));
+                () => HttpClient.GetFromJsonAsync<object>($"api/broker/{url}"));
         Assert.Equal("Response status code does not indicate success: 401 (Unauthorized).", response.Message);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -57,7 +44,7 @@ public class BrokerControllerUnauthenticatedIntegrationTest(IntegrationTestSessi
             Symbol = "TICKER",
         };
         var response =
-            await _client.PostAsJsonAsync($"api/broker/{url}", marketOrder);
+            await HttpClient.PostAsJsonAsync($"api/broker/{url}", marketOrder);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }

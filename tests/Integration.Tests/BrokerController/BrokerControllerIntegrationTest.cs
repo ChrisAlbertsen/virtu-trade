@@ -6,7 +6,7 @@ using Integration.Tests.TestData;
 
 namespace Integration.Tests.BrokerDataActions;
 
-[Collection("TestContainer Db")]
+[Collection("IntegrationTest")]
 public class BrokerControllerIntegrationTests(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
     [Trait("Category", "Integration test")]

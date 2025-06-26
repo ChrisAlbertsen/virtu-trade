@@ -8,14 +8,14 @@ using Persistence;
 
 namespace Integration.Tests.TestData;
 
-public abstract class BaseIntegrationTest : IClassFixture<IntegrationTestSessionFactory>, IDisposable
+public abstract class BaseIntegrationTest : IDisposable
 {
     private readonly IServiceScope _scope;
     protected readonly AppDbContext DbContext;
     protected readonly HttpClient HttpClient;
     protected readonly TestDataOptions TestData;
 
-    protected BaseIntegrationTest(IntegrationTestSessionFactory factory)
+    protected BaseIntegrationTest(WebApplicationFactory<Program> factory)
     {
         _scope = factory.Services.CreateScope();
         DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();

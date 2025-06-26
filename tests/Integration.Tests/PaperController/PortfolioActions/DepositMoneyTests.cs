@@ -9,7 +9,7 @@ using Service.Paper;
 
 namespace Integration.Tests.Paper.PortfolioActions;
 
-[Collection("TestContainer Db")]
+[Collection("IntegrationTest")]
 [TestSubject(typeof(PaperController))]
 public class DepositMoneyTests(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
