@@ -25,6 +25,14 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
         .WithPassword("postgres")
         .Build();
 
+    private bool _authorizeSession = true;
+
+    public IntegrationTestSessionFactory UnauthorizedSession()
+    {
+        _authorizeSession = false;
+        return this;
+    }
+    
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
@@ -50,7 +58,7 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
             {
                 ConfigureOptions(services);
                 ConfigureAppDbService(services);
-                ConfigureAuth(services);
+                if(_authorizeSession) ConfigureAuth(services);
                 ConfigureBinanceApi(services);
             }
         );
