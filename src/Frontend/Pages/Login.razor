@@ -1,6 +1,12 @@
 ﻿@page "/login"
+@using Frontend.Api.Clients
+@using Frontend.Api.Models
 @using Frontend.Components
+@using Frontend.Components.Alert
 @layout AccountManagementLayout
+@inject AuthApiClient AuthApiClient
+@inject AlertService AlertService
+@inject NavigationManager Navigation
 
 <AccountManagementContainer>
     <h4 class="mb-4 text-center fw-semibold">Login</h4>
@@ -10,8 +16,8 @@
         <ValidationSummary />
         
         <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
+            <label for="username" class="form-label">Email</label>
+            <InputText id="username" class="form-control" @bind-Value="loginModel.Email" />
         </div>
 
         <div class="mb-3">
@@ -30,15 +36,35 @@
 
 @code {
     private LoginModel loginModel = new();
-
-    private void HandleLogin()
+    private bool IsLoginSuccesful;
+    private async Task HandleLogin()
     {
-        // TODO: Handle registration logic here (e.g. call API, validate, redirect)
+        try
+        {
+            AccessTokenResponse? accessTokenResponse = await AuthApiClient.LoginAsync(
+                new LoginRequest(
+                    loginModel.Email,
+                    loginModel.Password,
+                    null,
+                    null),
+                true,
+                true);
+            
+            IsLoginSuccesful = true;
+        }
+        catch
+        {
+            //Some error handling goes here
+            //If not valid creds tell in login modal
+            //if technical error use AlertService to show alert
+        }
+        
+        Navigation.NavigateTo("/Overview");
     }
 
     private class LoginModel
     {
-        public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
 }
