@@ -1,0 +1,44 @@
+﻿@page "/login"
+@using Frontend.Components
+@layout AccountManagementLayout
+
+<AccountManagementContainer>
+    <h4 class="mb-4 text-center fw-semibold">Login</h4>
+
+    <EditForm Model="@loginModel" OnValidSubmit="@HandleLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <InputText id="username" class="form-control" @bind-Value="loginModel.Username" />
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+        </div>
+
+        <button type="submit" class="btn btn-dark w-100">Login</button>
+    </EditForm>
+
+    <p class="text-center mt-3 text-muted small">
+        Don't have an account? <a href="/register">Register</a>
+    </p>
+</AccountManagementContainer>
+
+
+@code {
+    private LoginModel loginModel = new();
+
+    private void HandleLogin()
+    {
+        // TODO: Handle registration logic here (e.g. call API, validate, redirect)
+    }
+
+    private class LoginModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+}

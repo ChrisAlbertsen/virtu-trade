@@ -1,5 +1,11 @@
-﻿@using Frontend.Components
-@inherits LayoutComponentBase
-<div class="page">
-    <NavBar></NavBar>
-</div>
+﻿@inherits LayoutComponentBase
+@using Frontend.Components
+
+
+    <NavBar />
+
+    <main>
+        @Body
+    </main>
+
+    <Footer />
