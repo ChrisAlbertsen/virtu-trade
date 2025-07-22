@@ -9,47 +9,47 @@
 @inject AlertService AlertService
 
 <AccountManagementContainer>
-        <h4 class="mb-4 text-center fw-semibold">Create Your Account</h4>
+    <h4 class="mb-4 text-center fw-semibold">Create Your Account</h4>
 
-        
-        @if (!HasRegistered)
-        {
-            <EditForm Model="@registerModel" OnValidSubmit="@HandleRegister">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <InputText id="email" class="form-control" @bind-Value="registerModel.Email" />
-                </div>
+    @if (!HasRegistered)
+    {
+        <EditForm Model="@registerModel" OnValidSubmit="@HandleRegister">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <InputText id="password" type="password" class="form-control" @bind-Value="registerModel.Password" />
-                </div>
-
-                <button type="submit" class="btn btn-dark w-100">Sign Up</button>
-            </EditForm>
-
-            <p class="text-center mt-3 text-muted small">
-                Already have an account? <a href="/login">Login</a>
-            </p>
-        }
-        else
-        {
-            <div class="alert alert-success text-center" role="alert">
-                Account created successfully! 🎉
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <InputText id="email" class="form-control" @bind-Value="registerModel.Email"/>
             </div>
-            <div class="text-center mt-4">
-                <button class="btn btn-outline-dark" @onclick=GoToLogin >Go to Login</button>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <InputText id="password" type="password" class="form-control" @bind-Value="registerModel.Password"/>
             </div>
-        }
+
+            <button type="submit" class="btn btn-dark w-100">Sign Up</button>
+        </EditForm>
+
+        <p class="text-center mt-3 text-muted small">
+            Already have an account? <a href="/login">Login</a>
+        </p>
+    }
+    else
+    {
+        <div class="alert alert-success text-center" role="alert">
+            Account created successfully! 🎉
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-outline-dark" @onclick=GoToLogin>Go to Login</button>
+        </div>
+    }
 
 </AccountManagementContainer>
 
 @code {
-    private RegisterModel registerModel = new();
-    private bool HasRegistered; 
+    private readonly RegisterModel registerModel = new();
+    private bool HasRegistered;
 
     private async Task HandleRegister()
     {
@@ -75,4 +75,5 @@
     {
         Navigation.NavigateTo("/login");
     }
+
 }

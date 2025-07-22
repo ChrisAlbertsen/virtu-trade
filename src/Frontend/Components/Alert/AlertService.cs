@@ -7,8 +7,11 @@ public class AlertService
 
     public void ShowAlert(string message, string type)
     {
-        OnShow?.Invoke(new AlertMessage {Message = message, Type = type});
+        OnShow?.Invoke(new AlertMessage { Message = message, Type = type });
     }
-    
-    public void HideAlert() => OnHide?.Invoke();
+
+    public void HideAlert()
+    {
+        OnHide?.Invoke();
+    }
 }

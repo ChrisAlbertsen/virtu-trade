@@ -1,7 +1,7 @@
 ﻿@layout AccountManagementLayout
 
 <div class="bg-light position-relative">
-    <BackButton/> 
+    <BackButton/>
     <div class="d-flex justify-content-center align-items-center vh-100">
         <div class="card shadow-sm p-4" style="min-width: 350px; max-width: 420px; width: 100%;">
             @ChildContent
@@ -10,6 +10,5 @@
 </div>
 
 @code {
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 }

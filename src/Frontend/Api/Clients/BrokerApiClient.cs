@@ -12,9 +12,11 @@ public class BrokerApiClient(HttpClient http)
         return await resp.Content.ReadFromJsonAsync<decimal>()!;
     }
 
-    public async Task<IEnumerable<object>?> GetHistoricalPricesAsync(string symbol, string interval, long startTime, long endTime, string timeZone, int limit)
+    public async Task<IEnumerable<object>?> GetHistoricalPricesAsync(string symbol, string interval, long startTime,
+        long endTime, string timeZone, int limit)
     {
-        var url = $"api/Broker/prices/historical?Symbol={symbol}&Interval={interval}&StartTime={startTime}&EndTime={endTime}&TimeZone={timeZone}&Limit={limit}";
+        var url =
+            $"api/Broker/prices/historical?Symbol={symbol}&Interval={interval}&StartTime={startTime}&EndTime={endTime}&TimeZone={timeZone}&Limit={limit}";
         var resp = await http.GetAsync(url);
         resp.EnsureSuccessStatusCode();
         return await resp.Content.ReadFromJsonAsync<IEnumerable<object>>()!;
