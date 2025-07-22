@@ -1,38 +1,19 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Data.DTOs.Orders;
-using Infrastructure.Binance;
-using Integration.Tests.BrokerController.Stubs;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Integration.Tests.TestData;
+using Integration.Tests.TestData.Factories;
 using Moq;
 
 namespace Integration.Tests.BrokerController.Auth;
 
-public class BrokerControllerUnauthenticatedIntegrationTest : IClassFixture<WebApplicationFactory<Program>>
+[Collection("UnauthenticatedIntegrationTest")]
+public class BrokerControllerUnauthenticatedIntegrationTest(UnauthenticatedIntegrationTestSessionFactory factory)
+    : BaseIntegrationTest(factory)
 {
-    private readonly HttpClient _client;
-
-    public BrokerControllerUnauthenticatedIntegrationTest(WebApplicationFactory<Program> factory)
-    {
-        _client = factory.WithWebHostBuilder(builder =>
-        {
-            builder.ConfigureTestServices(services =>
-            {
-                HttpClientFactoryServiceCollectionExtensions.AddHttpClient<IBinanceApi, BinanceApi>(services)
-                    .ConfigurePrimaryHttpMessageHandler(sp =>
-                    {
-                        var config = sp.GetRequiredService<IOptions<BinanceApiSettings>>();
-                        return new BinanceStubHttpMessageHandler(config);
-                    });
-            });
-        }).CreateClient();
-    }
-
     [Trait("Category", "Integration test")]
     [Theory(DisplayName = "Not authenticated. Should return 401")]
     [InlineData("prices/current?symbol=BTCUSDT")]
@@ -41,7 +22,7 @@ public class BrokerControllerUnauthenticatedIntegrationTest : IClassFixture<WebA
     {
         var response = await Assert
             .ThrowsAsync<HttpRequestException>(
-                () => _client.GetFromJsonAsync<object>($"api/broker/{url}"));
+                () => HttpClient.GetFromJsonAsync<object>($"api/broker/{url}"));
         Assert.Equal("Response status code does not indicate success: 401 (Unauthorized).", response.Message);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
@@ -51,8 +32,14 @@ public class BrokerControllerUnauthenticatedIntegrationTest : IClassFixture<WebA
     [InlineData("orders/execute-market-order")]
     public async Task PostEndpoints_WhenNotAuthenticated_ShouldReturnUnauthorized(string url)
     {
+        var marketOrder = new MarketOrderParams
+        {
+            PortfolioId = It.IsAny<Guid>(),
+            Quantity = 10,
+            Symbol = "TICKER"
+        };
         var response =
-            await _client.PostAsJsonAsync($"api/broker/{url}", It.IsAny<MarketOrderParams>());
+            await HttpClient.PostAsJsonAsync($"api/broker/{url}", marketOrder);
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }

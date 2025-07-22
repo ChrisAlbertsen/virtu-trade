@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using Api.Controllers;
 using Data.Entities;
 using Integration.Tests.TestData;
+using Integration.Tests.TestData.Factories;
 using JetBrains.Annotations;
-using Service.Paper;
 
 namespace Integration.Tests.Paper.PortfolioActions;
 
-[Collection("TestContainer Db")]
+[Collection("IntegrationTest")]
 [TestSubject(typeof(PaperController))]
 public class CreatePortfolioTests(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
@@ -17,7 +17,7 @@ public class CreatePortfolioTests(IntegrationTestSessionFactory factory) : BaseI
     [Fact(DisplayName = "Should successfully create portfolio")]
     public async Task CreatePortfolio_ShouldReturnCreatedPortfolio()
     {
-        var response = await HttpClientAuthenticated.PostAsJsonAsync<Portfolio>("api/paper/create-portfolio", null!);
+        var response = await HttpClient.PostAsJsonAsync<Portfolio>("api/paper/create-portfolio", null!);
         Assert.NotNull(response);
         Assert.True(response.IsSuccessStatusCode);
 
@@ -39,7 +39,7 @@ public class CreatePortfolioTests(IntegrationTestSessionFactory factory) : BaseI
     [Fact(DisplayName = "Should create an empty portfolio")]
     public async Task CreatePortfolio_ShouldCreateEmptyPortfolio()
     {
-        var response = await HttpClientAuthenticated.PostAsJsonAsync<Portfolio>("api/paper/create-portfolio", null!);
+        var response = await HttpClient.PostAsJsonAsync<Portfolio>("api/paper/create-portfolio", null!);
         Assert.NotNull(response);
         Assert.True(response.IsSuccessStatusCode);
 

@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Api.Controllers;
 using Data.Entities;
 using Integration.Tests.TestData;
+using Integration.Tests.TestData.Factories;
 using JetBrains.Annotations;
-using Service.Paper;
 
 namespace Integration.Tests.Paper.PortfolioActions;
 
-[Collection("TestContainer Db")]
+[Collection("IntegrationTest")]
 [TestSubject(typeof(PaperController))]
 public class DepositMoneyTests(IntegrationTestSessionFactory factory) : BaseIntegrationTest(factory)
 {
@@ -20,12 +21,14 @@ public class DepositMoneyTests(IntegrationTestSessionFactory factory) : BaseInte
     public async Task DepositMoney_ShouldSuccessfullyDepositMoney()
     {
         var portfolio = await CreatePortfolio();
-        
-        var depositResponse = await HttpClientAuthenticated.PostAsync($"api/paper/deposit-money?portfolioId={portfolio.Id}&moneyToDeposit={DepositAmount}", null);
-        
+
+        var depositResponse =
+            await HttpClient.PostAsync(
+                $"api/paper/deposit-money?portfolioId={portfolio.Id}&moneyToDeposit={DepositAmount}", null);
+
         Assert.NotNull(depositResponse);
         Assert.True(depositResponse.IsSuccessStatusCode);
-        
+
         var persistedPortfolio = await DbContext
             .Portfolios
             .FindAsync(portfolio.Id);
@@ -38,16 +41,18 @@ public class DepositMoneyTests(IntegrationTestSessionFactory factory) : BaseInte
     [Fact(DisplayName = "Should fail to deposit paper money to portfolio")]
     public async Task? DepositMoney_WhenPortfolioDoesNotExist_ShouldReturnError()
     {
-        var depositResponse = await HttpClientAuthenticated.PostAsync($"api/paper/deposit-money?portfolioId={Guid.NewGuid()}&moneyToDeposit={DepositAmount}", null);
-        
+        var depositResponse =
+            await HttpClient.PostAsync(
+                $"api/paper/deposit-money?portfolioId={Guid.NewGuid()}&moneyToDeposit={DepositAmount}", null);
+
         Assert.NotNull(depositResponse);
         Assert.False(depositResponse.IsSuccessStatusCode);
-        Assert.True(depositResponse.StatusCode == System.Net.HttpStatusCode.Forbidden);
+        Assert.True(depositResponse.StatusCode == HttpStatusCode.Forbidden);
     }
 
     private async Task<Portfolio> CreatePortfolio()
     {
-        var portfolioResponse = await HttpClientAuthenticated.PostAsJsonAsync<Portfolio>("api/paper/create-portfolio", null!);
+        var portfolioResponse = await HttpClient.PostAsJsonAsync<Portfolio>("api/paper/create-portfolio", null!);
         Assert.NotNull(portfolioResponse);
         Assert.True(portfolioResponse.IsSuccessStatusCode);
 

@@ -8,14 +8,27 @@ using Persistence;
 
 namespace Integration.Tests.TestData;
 
-public abstract class BaseIntegrationTest(
-    IntegrationTestSessionFactory sessionFactory)
+public abstract class BaseIntegrationTest : IDisposable
 {
-    protected readonly AppDbContext DbContext = sessionFactory.Services.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
-    protected readonly HttpClient HttpClientAuthenticated = sessionFactory.CreateClient(
-        new WebApplicationFactoryClientOptions
-        {
-            BaseAddress = new Uri("http://localhost:5070/")
-        });
-    protected readonly TestDataOptions TestData = sessionFactory.Services.CreateScope().ServiceProvider.GetRequiredService<IOptions<TestDataOptions>>().Value;
+    private readonly IServiceScope _scope;
+    protected readonly AppDbContext DbContext;
+    protected readonly HttpClient HttpClient;
+    protected readonly TestDataOptions TestData;
+
+    protected BaseIntegrationTest(WebApplicationFactory<Program> factory)
+    {
+        _scope = factory.Services.CreateScope();
+        DbContext = _scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        HttpClient = factory.CreateClient(
+            new WebApplicationFactoryClientOptions
+            {
+                BaseAddress = new Uri("http://localhost:5070/")
+            });
+        TestData = _scope.ServiceProvider.GetRequiredService<IOptions<TestDataOptions>>().Value;
+    }
+
+    public void Dispose()
+    {
+        _scope.Dispose();
+    }
 }

@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 using Persistence;
 using Testcontainers.PostgreSql;
 
-namespace Integration.Tests.TestData;
+namespace Integration.Tests.TestData.Factories;
 
 public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
@@ -74,7 +74,7 @@ public class IntegrationTestSessionFactory : WebApplicationFactory<Program>, IAs
         services.AddScoped<TestDataSeeder, TestDataSeeder>();
     }
 
-    private void ConfigureAuth(IServiceCollection services)
+    protected virtual void ConfigureAuth(IServiceCollection services)
     {
         services.AddAuthentication("TestScheme")
             .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(

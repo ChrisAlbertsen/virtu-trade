@@ -35,7 +35,7 @@ public class BrokerController(
     {
         var result =
             await authorizationService.AuthorizeAsync(User, marketOrderParams.PortfolioId, "canAccessPortfolio");
-        if (!result.Succeeded) return Forbid();
+        if (!result.Succeeded) return Unauthorized();
         var orderFulfillmentResponse = await brokerOrderService.ExecuteMarketOrder(marketOrderParams);
         return Ok(orderFulfillmentResponse);
     }
