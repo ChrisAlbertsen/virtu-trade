@@ -1,6 +1,9 @@
 ﻿@page "/register"
+@using Frontend.Api.Clients
+@using Frontend.Api.Models
 @using Frontend.Components
 @layout AccountManagementLayout
+@inject AuthApiClient AuthApiClient
 
 <AccountManagementContainer>
         <h4 class="mb-4 text-center fw-semibold">Create Your Account</h4>
@@ -35,9 +38,10 @@
 @code {
     private RegisterModel registerModel = new();
 
-    private void HandleRegister()
+    private async Task HandleRegister()
     {
-        // TODO: Handle registration logic here (e.g. call API, validate, redirect)
+        try { await AuthApiClient.RegisterAsync(new RegisterRequest(registerModel.Email, registerModel.Password)); }
+        catch (Exception ex) { /* error handling */ }
     }
 
     private class RegisterModel

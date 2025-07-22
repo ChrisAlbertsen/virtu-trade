@@ -73,6 +73,17 @@ builder.Services.AddIdentityCore<User>()
 
 builder.Services.Configure<BinanceApiSettings>(builder.Configuration.GetSection("BinanceApi"));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:5166") // 👈 use your frontend URL
+            .AllowAnyHeader()
+            .AllowAnyMethod(); // includes OPTIONS
+    });
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -86,6 +97,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpLogging();
 
 app.UseHttpsRedirection();
+
+app.UseCors("FrontendPolicy");
 
 app.UseAuthorization();
 
