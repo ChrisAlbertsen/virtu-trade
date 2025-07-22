@@ -1,0 +1,37 @@
+﻿@inject AlertService AlertService
+
+@if (CurrentAlert != null)
+{
+    <div class="alert alert-@CurrentAlert.Type text-center position-fixed top-0 start-50 translate-middle-x mt-3 shadow"
+         style="z-index: 1050; min-width: 300px; max-width: 90%;">
+        @CurrentAlert.Message
+        <button type="button" class="btn-close float-end" aria-label="Close"
+                @onclick="Dismiss">
+        </button>
+    </div>
+}
+
+
+@code {
+    private AlertMessage? CurrentAlert;
+
+    protected override void OnInitialized()
+    {
+        AlertService.OnShow += Show;
+        AlertService.OnHide += Dismiss;
+    }
+
+    private void Show(AlertMessage alert)
+    {
+        CurrentAlert = alert;
+        StateHasChanged();
+
+        _ = Task.Delay(10000).ContinueWith(_ => Dismiss(), TaskScheduler.FromCurrentSynchronizationContext());
+    }
+
+    private void Dismiss()
+    {
+        CurrentAlert = null;
+        StateHasChanged();
+    }
+}
